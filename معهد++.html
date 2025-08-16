@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>معهد الرسول الأعظم (ص) التقني</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
+        
+        body {
+            font-family: 'Tajawal', sans-serif;
+        }
+        
+        .file-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -100%;
+                top: 0;
+                z-index: 50;
+                height: 100vh;
+                width: 80%;
+            }
+            
+            .sidebar.open {
+                left: 0;
+            }
+            
+            .overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 40;
+                display: none;
+            }
+            
+            .overlay.open {
+                display: block;
+            }
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-fadeIn {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        
+        .delay-100 {
+            animation-delay: 0.1s;
+        }
+        
+        .delay-200 {
+            animation-delay: 0.2s;
+        }
+        
+        /* Hover animations */
+        .hover-grow {
+            transition: transform 0.3s ease;
+        }
+        
+        .hover-grow:hover {
+            transform: scale(1.03);
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Main Index Page -->
+    <div id="index-page" class="min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="bg-blue-800 text-white py-6 shadow-lg">
+            <div class="container mx-auto px-4 text-center">
+                <h1 class="text-3xl font-bold animate-fadeIn">مرحباً بكم في معهد الرسول الأعظم (ص)</h1>
+                <p class="mt-2 animate-fadeIn delay-100">نظام إدارة المحتوى التعليمي</p>
+            </div>
+        </header>
+        
+        <!-- Main Content -->
+        <main class="flex-grow flex items-center justify-center py-12">
+            <div class="container mx-auto px-4">
+                <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
+                    <div class="p-8">
+                        <div class="text-center mb-8">
+                                                        <h2 class="mt-4 text-2xl font-bold text-gray-800">اختر طريقة الدخول</h2>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Student Login Card -->
+                            <div class="bg-blue-50 rounded-lg p-6 border border-blue-200 hover:border-blue-400 transition-all cursor-pointer hover-grow shadow-lg hover:shadow-xl" onclick="navigateToStudent()">
+                                <div class="text-center">
+                                    <i class="fas fa-user-graduate text-5xl text-blue-600 mb-4"></i>
+                                    <h3 class="text-xl font-semibold text-gray-800">الدخول كطالب</h3>
+                                    <p class="mt-2 text-gray-600">تصفح المواد التعليمية بدون الحاجة لتسجيل الدخول</p>
+                                    <button class="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
+                                        الدخول الآن
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Teacher Login Card -->
+                            <div class="bg-green-50 rounded-lg p-6 border border-green-200 hover:border-green-400 transition-all cursor-pointer hover-grow shadow-lg hover:shadow-xl" onclick="showTeacherLogin()">
+                                <div class="text-center">
+                                    <i class="fas fa-chalkboard-teacher text-5xl text-green-600 mb-4"></i>
+                                    <h3 class="text-xl font-semibold text-gray-800">الدخول كأستاذ</h3>
+                                    <p class="mt-2 text-gray-600">إدارة المحتوى التعليمي لطلابك</p>
+                                    <button class="mt-4 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors">
+                                        الدخول الآن
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Teacher Login Modal -->
+        <div id="teacher-login-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+            <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold text-gray-800">تسجيل دخول الأستاذ</h3>
+                    <button onclick="hideTeacherLogin()" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <form id="teacher-login-form" class="space-y-4">
+                    <div>
+                        <label for="username" class="block text-sm font-medium text-gray-700 mb-1">اسم المستخدم</label>
+                        <input type="text" id="username" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">كلمة المرور</label>
+                        <input type="password" id="password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    
+                    <div class="pt-2">
+                        <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors">
+                            تسجيل الدخول
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <footer class="bg-gray-800 text-white py-6">
+            <div class="container mx-auto px-4 text-center">
+                <p>© 2025 معاهد المهدي. جميع الحقوق محفوظة.</p>
+            </div>
+        </footer>
+    </div>
+    
+    <!-- Student Page -->
+    <div id="student-page" class="min-h-screen hidden">
+        <!-- Header -->
+        <header class="bg-blue-800 text-white py-4 shadow-lg">
+            <div class="container mx-auto px-4 flex justify-between items-center">
+                <button onclick="navigateToIndex()" class="flex items-center text-white hover:text-blue-200 transition-colors">
+                    <i class="fas fa-arrow-right ml-2"></i>
+                    <span>العودة للصفحة الرئيسية</span>
+                </button>
+                <h1 class="text-xl font-bold">واجهة الطالب</h1>
+            </div>
+        </header>
+        
+        <!-- Main Content -->
+        <main class="container mx-auto px-4 py-8">
+            <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8">
+                <div class="p-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">اختر المادة التعليمية</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Specialization Dropdown -->
+                        <div>
+                            <label for="student-specialization" class="block text-sm font-medium text-gray-700 mb-1">الاختصاص</label>
+                            <select id="student-specialization" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option value="">اختر الاختصاص</option>
+                                <option value="nursing">العناية التمريضية</option>
+                                <option value="accounting">المحاسبة والمعلوماتية</option>
+                                <option value="advertising">فنون الإعلان</option>
+                                <option value="education">التربية الحضانية</option>
+                                <option value="special-education">التربية الحضانية المختصة</option>
+                                <option value="it">تكنولوجيا المعلوماتية</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Grade Dropdown -->
+                        <div>
+                            <label for="student-grade" class="block text-sm font-medium text-gray-700 mb-1">الصف</label>
+                            <select id="student-grade" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" disabled>
+                                <option value="">اختر الصف</option>
+                                <option value="bt1">BT1</option>
+                                <option value="bt2">BT2</option>
+                                <option value="bt3">BT3</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Subject Dropdown -->
+                        <div>
+                            <label for="student-subject" class="block text-sm font-medium text-gray-700 mb-1">المادة</label>
+                            <select id="student-subject" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" disabled>
+                                <option value="">اختر المادة</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Files Section -->
+            <div id="student-files-section" class="hidden">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8">
+                    <div class="p-6">
+                        <h2 class="text-xl font-bold text-gray-800 mb-4">الملفات التعليمية</h2>
+                        
+                        <!-- Images Section -->
+                        <div class="mb-8">
+                            <h3 class="text-lg font-semibold text-gray-700 mb-4 border-b pb-2 flex items-center">
+                                <i class="fas fa-images ml-2 text-blue-500"></i>
+                                الصور
+                            </h3>
+                            <div id="student-images-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                                <!-- Images will be loaded here -->
+                            </div>
+                        </div>
+                        
+                        <!-- Files Section -->
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-700 mb-4 border-b pb-2 flex items-center">
+                                <i class="fas fa-file-alt ml-2 text-green-500"></i>
+                                الملفات
+                            </h3>
+                            <div id="student-files-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                <!-- Files will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Footer -->
+        <footer class="bg-gray-800 text-white py-6">
+            <div class="container mx-auto px-4 text-center">
+                <p>© 2023 معاهد المهدي. جميع الحقوق محفوظة.</p>
+            </div>
+        </footer>
+    </div>
+    
+    <!-- Teacher Page -->
+    <div id="teacher-page" class="min-h-screen hidden">
+        <!-- Mobile Sidebar Toggle -->
+        <div class="md:hidden fixed top-4 left-4 z-30">
+            <button id="sidebar-toggle" class="bg-blue-600 text-white p-2 rounded-lg shadow-lg">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
+        <!-- Sidebar -->
+        <div id="sidebar" class="sidebar bg-blue-800 text-white w-64 fixed h-full overflow-y-auto">
+            <div class="p-4 flex items-center justify-between border-b border-blue-700">
+                <h2 class="text-xl font-bold">لوحة التحكم</h2>
+                <button id="sidebar-close" class="md:hidden text-white">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="p-4">
+                <div class="mb-8">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-user-circle text-2xl ml-2"></i>
+                        <span>الأستاذ</span>
+                    </div>
+                    <button onclick="logoutTeacher()" class="w-full flex items-center justify-center bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors">
+                        <i class="fas fa-sign-out-alt ml-2"></i>
+                        تسجيل الخروج
+                    </button>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-2 flex items-center">
+                        <i class="fas fa-book ml-2"></i>
+                        الاختصاص
+                    </h3>
+                    <select id="teacher-specialization" class="w-full px-4 py-2 bg-blue-700 border border-blue-600 rounded-lg text-white">
+                        <option value="">اختر الاختصاص</option>
+                        <option value="nursing">العناية التمريضية</option>
+                        <option value="accounting">المحاسبة والمعلوماتية</option>
+                        <option value="advertising">فنون الإعلان</option>
+                        <option value="education">التربية الحضانية</option>
+                        <option value="special-education">التربية الحضانية المختصة</option>
+                        <option value="it">تكنولوجيا المعلوماتية</option>
+                    </select>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-2 flex items-center">
+                        <i class="fas fa-users ml-2"></i>
+                        الصف
+                    </h3>
+                    <select id="teacher-grade" class="w-full px-4 py-2 bg-blue-700 border border-blue-600 rounded-lg text-white" disabled>
+                        <option value="">اختر الصف</option>
+                        <option value="bt1">BT1</option>
+                        <option value="bt2">BT2</option>
+                        <option value="bt3">BT3</option>
+                    </select>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-2 flex items-center">
+                        <i class="fas fa-book-open ml-2"></i>
+                        المادة
+                    </h3>
+                    <select id="teacher-subject" class="w-full px-4 py-2 bg-blue-700 border border-blue-600 rounded-lg text-white" disabled>
+                        <option value="">اختر المادة</option>
+                    </select>
+                </div>
+                
+                <div class="mt-8">
+                    <button onclick="navigateToIndex()" class="w-full flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
+                        <i class="fas fa-home ml-2"></i>
+                        الصفحة الرئيسية
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Overlay for mobile sidebar -->
+        <div id="overlay" class="overlay"></div>
+        
+        <!-- Main Content -->
+        <div class="md:mr-64">
+            <!-- Header -->
+            <header class="bg-blue-700 text-white py-4 shadow-lg">
+                <div class="container mx-auto px-4">
+                    <h1 class="text-xl font-bold">واجهة الأستاذ</h1>
+                </div>
+            </header>
+            
+            <!-- Main Content -->
+            <main class="container mx-auto px-4 py-8">
+                <!-- Upload Section -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8">
+                    <div class="p-6">
+                        <h2 class="text-xl font-bold text-gray-800 mb-4">رفع الملفات</h2>
+                        
+                        <div id="teacher-upload-section" class="hidden">
+                            <!-- Upload Images -->
+                            <div class="mb-8">
+                                <h3 class="text-lg font-semibold text-gray-700 mb-4 border-b pb-2 flex items-center">
+                                    <i class="fas fa-images ml-2 text-blue-500"></i>
+                                    رفع الصور
+                                </h3>
+                                <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                                    <input type="file" id="image-upload" class="hidden" accept="image/*" multiple>
+                                    <label for="image-upload" class="cursor-pointer">
+                                        <i class="fas fa-cloud-upload-alt text-4xl text-blue-500 mb-2"></i>
+                                        <p class="text-gray-600">اسحب وأسقط الصور هنا أو انقر للاختيار</p>
+                                        <p class="text-sm text-gray-500 mt-1">يسمح بملفات الصور (JPG, PNG, GIF)</p>
+                                    </label>
+                                </div>
+                                <div id="image-preview" class="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                                    <!-- Preview of selected images will appear here -->
+                                </div>
+                                <button id="upload-images-btn" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors hidden">
+                                    <i class="fas fa-upload ml-2"></i>
+                                    رفع الصور
+                                </button>
+                            </div>
+                            
+                            <!-- Upload Files -->
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-700 mb-4 border-b pb-2 flex items-center">
+                                    <i class="fas fa-file-alt ml-2 text-green-500"></i>
+                                    رفع الملفات
+                                </h3>
+                                <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                                    <input type="file" id="file-upload" class="hidden" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx" multiple>
+                                    <label for="file-upload" class="cursor-pointer">
+                                        <i class="fas fa-file-upload text-4xl text-green-500 mb-2"></i>
+                                        <p class="text-gray-600">اسحب وأسقط الملفات هنا أو انقر للاختيار</p>
+                                        <p class="text-sm text-gray-500 mt-1">يسمح بملفات PDF, Word, PowerPoint, Excel</p>
+                                    </label>
+                                </div>
+                                <div id="file-preview" class="mt-4">
+                                    <!-- Preview of selected files will appear here -->
+                                </div>
+                                <button id="upload-files-btn" class="mt-4 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors hidden">
+                                    <i class="fas fa-upload ml-2"></i>
+                                    رفع الملفات
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div id="teacher-select-message" class="text-center py-8 text-gray-500">
+                            <i class="fas fa-info-circle text-3xl mb-4"></i>
+                            <p>الرجاء اختيار الاختصاص والصف والمادة لتمكين رفع الملفات</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Files Section -->
+                <div id="teacher-files-section" class="hidden">
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                        <div class="p-6">
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">الملفات المرفوعة</h2>
+                            
+                            <!-- Images Section -->
+                            <div class="mb-8">
+                                <h3 class="text-lg font-semibold text-gray-700 mb-4 border-b pb-2 flex items-center">
+                                    <i class="fas fa-images ml-2 text-blue-500"></i>
+                                    الصور
+                                </h3>
+                                <div id="teacher-images-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                                    <!-- Images will be loaded here -->
+                                </div>
+                            </div>
+                            
+                            <!-- Files Section -->
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-700 mb-4 border-b pb-2 flex items-center">
+                                    <i class="fas fa-file-alt ml-2 text-green-500"></i>
+                                    الملفات
+                                </h3>
+                                <div id="teacher-files-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    <!-- Files will be loaded here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            
+            <!-- Footer -->
+            <footer class="bg-gray-800 text-white py-6">
+                <div class="container mx-auto px-4 text-center">
+                    <p>© 2023 معاهد المهدي. جميع الحقوق محفوظة.</p>
+                </div>
+            </footer>
+        </div>
+    </div>
+    
+    <script>
+        // Teacher credentials
+        const teacherUser = "Admin.yasser";
+        const teacherPass = "@dmin.y@sser";
+        
+        // Subjects data
+        const subjectsData = {
+            nursing: {
+                bt1: ["الأحياء", "الكيمياء", "العلوم التمريضية", "اللغة العربية", "اللغة الفرنسية", "اللغة الإنكليزية", "الرياضيات"],
+                bt2: ["الأحياء", "الكيمياء", "العلوم التمريضية", "اللغة العربية", "اللغة الفرنسية", "اللغة الإنكليزية", "الرياضيات"],
+                bt3: ["الأحياء", "الكيمياء", "العلوم التمريضية", "اللغة العربية", "اللغة الفرنسية", "اللغة الإنكليزية", "الرياضيات"]
+            },
+            accounting: {
+                bt1: ["المحاسبة", "المعلوماتية", "الاقتصاد", "اللغة العربية", "اللغة الفرنسية", "اللغة الإنكليزية", "الرياضيات"],
+                bt2: ["المحاسبة", "المعلوماتية", "الاقتصاد", "اللغة العربية", "اللغة الفرنسية", "اللغة الإنكليزية", "الرياضيات"],
+                bt3: ["المحاسبة", "المعلوماتية", "الاقتصاد", "اللغة العربية", "اللغة الفرنسية", "اللغة الإنكليزية", "الرياضيات"]
+            },
+            advertising: {
+                bt1: ["التصميم الجرافيكي", "التصوير الإعلاني", "اللغة العربية", "اللغة الفرنسية", "اللغة الإنكليزية", "الرياضيات"],
+                bt2: ["التصميم الجرافيكي", "التصوير الإعلاني", "اللغة العربية", "اللغة الفرنسية", "اللغة الإنكليزية", "الرياضيات"],
+                bt3: ["التصميم الجرافيكي", "التصوير الإعلاني", "اللغة العربية", "اللغة الفرنسية", "اللغة الإنكليزية", "الرياضيات"]
+            },
+            education: {
+                bt1: ["التربية العامة", "علم النفس", "اللغة العربية", "اللغة الفرنسية", "اللغة الإنكليزية", "الرياضيات"],
+                bt2: ["التربية العامة", "علم النفس", "اللغة العربية", "اللغة الفرنسية", "اللغة الإنكليزية", "الرياضيات"],
+                bt3: ["التربية العامة", "علم النفس", "اللغة العربية", "اللغة الفرنسية", "اللغة الإنكليزية", "الرياضيات"]
+            },
+            "special-education": {
+                bt1: ["التربية العامة", "علم النفس", "اللغة العربية", "اللغة الفرنسية", "اللغة الإنكليزية", "الرياضيات"],
+                bt2: ["التربية العامة", "علم النفس", "اللغة العربية", "اللغة الفرنسية", "اللغة الإنكليزية", "الرياضيات"],
+                bt3: ["التربية العامة", "علم النفس", "اللغة العربية", "اللغة الفرنسية", "اللغة الإنكليزية", "الرياضيات"]
+            },
+            it: {
+                bt1: ["البرمجة", "الشبكات", "أنظمة التشغيل", "اللغة العربية", "اللغة الفرنسية", "اللغة الإنكليزية", "الرياضيات"],
+                bt2: ["البرمجة", "الشبكات", "أنظمة التشغيل", "اللغة العربية", "اللغة الفرنسية", "اللغة الإنكليزية", "الرياضيات"],
+                bt3: ["البرمجة", "الشبكات", "أنظمة التشغيل", "اللغة العربية", "اللغة الفرنسية", "اللغة الإنكليزية", "الرياضيات"]
+            }
+        };
+        
+        // Specialization names in Arabic
+        const specializationNames = {
+            nursing: "العناية التمريضية",
+            accounting: "المحاسبة والمعلوماتية",
+            advertising: "فنون الإعلان",
+            education: "التربية الحضانية",
+            "special-education": "التربية الحضانية المختصة",
+            it: "تكنولوجيا المعلوماتية"
+        };
+        
+        // Grade names in Arabic
+        const gradeNames = {
+            bt1: "BT1",
+            bt2: "BT2",
+            bt3: "BT3"
+        };
+        
+        // Current selections
+        let currentSpecialization = "";
+        let currentGrade = "";
+        let currentSubject = "";
+        
+        // File storage simulation
+        let fileStorage = {};
+        
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize dropdowns for student page
+            const studentSpecialization = document.getElementById('student-specialization');
+            const studentGrade = document.getElementById('student-grade');
+            const studentSubject = document.getElementById('student-subject');
+            
+            if (studentSpecialization) {
+                studentSpecialization.addEventListener('change', function() {
+                    currentSpecialization = this.value;
+                    studentGrade.disabled = !this.value;
+                    studentSubject.disabled = true;
+                    studentSubject.innerHTML = '<option value="">اختر المادة</option>';
+                    
+                    if (this.value) {
+                        // Enable grade dropdown and populate subjects when grade is selected
+                        studentGrade.addEventListener('change', function() {
+                            currentGrade = this.value;
+                            studentSubject.disabled = !this.value;
+                            
+                            if (this.value) {
+                                const subjects = subjectsData[currentSpecialization][currentGrade];
+                                studentSubject.innerHTML = '<option value="">اختر المادة</option>';
+                                
+                                subjects.forEach(subject => {
+                                    const option = document.createElement('option');
+                                    option.value = subject;
+                                    option.textContent = subject;
+                                    studentSubject.appendChild(option);
+                                });
+                            }
+                        });
+                    }
+                });
+                
+                studentSubject.addEventListener('change', function() {
+                    currentSubject = this.value;
+                    
+                    if (this.value) {
+                        loadStudentFiles();
+                        document.getElementById('student-files-section').classList.remove('hidden');
+                    } else {
+                        document.getElementById('student-files-section').classList.add('hidden');
+                    }
+                });
+            }
+            
+            // Initialize dropdowns for teacher page
+            const teacherSpecialization = document.getElementById('teacher-specialization');
+            const teacherGrade = document.getElementById('teacher-grade');
+            const teacherSubject = document.getElementById('teacher-subject');
+            
+            if (teacherSpecialization) {
+                teacherSpecialization.addEventListener('change', function() {
+                    currentSpecialization = this.value;
+                    teacherGrade.disabled = !this.value;
+                    teacherSubject.disabled = true;
+                    teacherSubject.innerHTML = '<option value="">اختر المادة</option>';
+                    
+                    if (this.value) {
+                        // Enable grade dropdown and populate subjects when grade is selected
+                        teacherGrade.addEventListener('change', function() {
+                            currentGrade = this.value;
+                            teacherSubject.disabled = !this.value;
+                            
+                            if (this.value) {
+                                const subjects = subjectsData[currentSpecialization][currentGrade];
+                                teacherSubject.innerHTML = '<option value="">اختر المادة</option>';
+                                
+                                subjects.forEach(subject => {
+                                    const option = document.createElement('option');
+                                    option.value = subject;
+                                    option.textContent = subject;
+                                    teacherSubject.appendChild(option);
+                                });
+                            }
+                        });
+                    }
+                });
+                
+                teacherSubject.addEventListener('change', function() {
+                    currentSubject = this.value;
+                    
+                    if (this.value) {
+                        // Clean up any previous file URLs to prevent memory leaks
+                        if (fileStorage[currentSpecialization] && 
+                            fileStorage[currentSpecialization][currentGrade] && 
+                            fileStorage[currentSpecialization][currentGrade][currentSubject]) {
+                            
+                            const files = fileStorage[currentSpecialization][currentGrade][currentSubject];
+                            files.images.forEach(img => {
+                                if (img.url.startsWith('blob:')) {
+                                    URL.revokeObjectURL(img.url);
+                                }
+                            });
+                            files.files.forEach(f => {
+                                if (f.url.startsWith('blob:')) {
+                                    URL.revokeObjectURL(f.url);
+                                }
+                            });
+                        }
+                        
+                        document.getElementById('teacher-upload-section').classList.remove('hidden');
+                        document.getElementById('teacher-select-message').classList.add('hidden');
+                        document.getElementById('teacher-files-section').classList.remove('hidden');
+                        setupFileUploads();
+                        loadTeacherFiles();
+                    } else {
+                        document.getElementById('teacher-upload-section').classList.add('hidden');
+                        document.getElementById('teacher-select-message').classList.remove('hidden');
+                        document.getElementById('teacher-files-section').classList.add('hidden');
+                    }
+                });
+            }
+            
+            // Initialize teacher login form
+            const teacherLoginForm = document.getElementById('teacher-login-form');
+            if (teacherLoginForm) {
+                teacherLoginForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const username = document.getElementById('username').value;
+                    const password = document.getElementById('password').value;
+                    
+                    if (username === teacherUser && password === teacherPass) {
+                        hideTeacherLogin();
+                        navigateToTeacher();
+                    } else {
+                        alert('اسم المستخدم أو كلمة المرور غير صحيحة');
+                    }
+                });
+            }
+            
+            // Initialize sidebar toggle for mobile
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const sidebarClose = document.getElementById('sidebar-close');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', function() {
+                    sidebar.classList.add('open');
+                    overlay.classList.add('open');
+                });
+            }
+            
+            if (sidebarClose) {
+                sidebarClose.addEventListener('click', function() {
+                    sidebar.classList.remove('open');
+                    overlay.classList.remove('open');
+                });
+            }
+            
+            if (overlay) {
+                overlay.addEventListener('click', function() {
+                    sidebar.classList.remove('open');
+                    overlay.classList.remove('open');
+                });
+            }
+            
+            // Initialize file storage with some sample data
+            initializeFileStorage();
+        });
+        
+        // Navigation functions
+        function navigateToIndex() {
+            document.getElementById('index-page').classList.remove('hidden');
+            document.getElementById('student-page').classList.add('hidden');
+            document.getElementById('teacher-page').classList.add('hidden');
+        }
+        
+        function navigateToStudent() {
+            document.getElementById('index-page').classList.add('hidden');
+            document.getElementById('student-page').classList.remove('hidden');
+            document.getElementById('teacher-page').classList.add('hidden');
+        }
+        
+        function navigateToTeacher() {
+            document.getElementById('index-page').classList.add('hidden');
+            document.getElementById('student-page').classList.add('hidden');
+            document.getElementById('teacher-page').classList.remove('hidden');
+        }
+        
+        function showTeacherLogin() {
+            document.getElementById('teacher-login-modal').classList.remove('hidden');
+        }
+        
+        function hideTeacherLogin() {
+            document.getElementById('teacher-login-modal').classList.add('hidden');
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+        
+        function logoutTeacher() {
+            navigateToIndex();
+        }
+        
+        // File handling functions
+        function initializeFileStorage() {
+            // This is a simulation of file storage since we're not using a real database
+            // In a real app, this would be replaced with actual file storage or database calls
+            
+            fileStorage = {
+                nursing: {
+                    bt1: {
+                        "الأحياء": {
+                            images: [
+                                {name: "خلية حية.jpg", url: "https://via.placeholder.com/300x200?text=خلية+حية"},
+                                {name: "جهاز هضمي.png", url: "https://via.placeholder.com/300x200?text=جهاز+هضمي"}
+                            ],
+                            files: [
+                                {name: "ملخص الأحياء.pdf", url: "https://via.placeholder.com/300x200?text=ملخص+الأحياء.pdf"},
+                                {name: "أسئلة.docx", url: "https://via.placeholder.com/300x200?text=أسئلة.docx"}
+                            ]
+                        },
+                        "الكيمياء": {
+                            images: [
+                                {name: "جدول دوري.jpg", url: "https://via.placeholder.com/300x200?text=جدول+دوري"}
+                            ],
+                            files: [
+                                {name: "تفاعلات كيميائية.pdf", url: "https://via.placeholder.com/300x200?text=تفاعلات+كيميائية.pdf"}
+                            ]
+                        }
+                    },
+                    bt2: {
+                        "الأحياء": {
+                            images: [],
+                            files: []
+                        }
+                    }
+                },
+                accounting: {
+                    bt1: {
+                        "المحاسبة": {
+                            images: [
+                                {name: "ميزانية.jpg", url: "https://via.placeholder.com/300x200?text=ميزانية"}
+                            ],
+                            files: [
+                                {name: "أساسيات المحاسبة.pdf", url: "https://via.placeholder.com/300x200?text=أساسيات+المحاسبة.pdf"},
+                                {name: "تمارين.xlsx", url: "https://via.placeholder.com/300x200?text=تمارين.xlsx"}
+                            ]
+                        }
+                    }
+                }
+            };
+        }
+        
+        function loadStudentFiles() {
+            const imagesContainer = document.getElementById('student-images-container');
+            const filesContainer = document.getElementById('student-files-container');
+            
+            imagesContainer.innerHTML = '';
+            filesContainer.innerHTML = '';
+            
+            // Check if files exist for the selected path
+            if (fileStorage[currentSpecialization] && 
+                fileStorage[currentSpecialization][currentGrade] && 
+                fileStorage[currentSpecialization][currentGrade][currentSubject]) {
+                
+                const files = fileStorage[currentSpecialization][currentGrade][currentSubject];
+                
+                // Display images
+                files.images.forEach(image => {
+                    const imageCard = createImageCard(image, false);
+                    imagesContainer.appendChild(imageCard);
+                });
+                
+                // Display files
+                files.files.forEach(file => {
+                    const fileCard = createFileCard(file, false);
+                    filesContainer.appendChild(fileCard);
+                });
+            } else {
+                // No files found
+                imagesContainer.innerHTML = '<p class="text-gray-500 col-span-full text-center py-4">لا توجد صور متاحة</p>';
+                filesContainer.innerHTML = '<p class="text-gray-500 col-span-full text-center py-4">لا توجد ملفات متاحة</p>';
+            }
+        }
+        
+        function loadTeacherFiles() {
+            const imagesContainer = document.getElementById('teacher-images-container');
+            const filesContainer = document.getElementById('teacher-files-container');
+            
+            imagesContainer.innerHTML = '';
+            filesContainer.innerHTML = '';
+            
+            // Initialize storage path if it doesn't exist
+            if (!fileStorage[currentSpecialization]) {
+                fileStorage[currentSpecialization] = {};
+            }
+            
+            if (!fileStorage[currentSpecialization][currentGrade]) {
+                fileStorage[currentSpecialization][currentGrade] = {};
+            }
+            
+            if (!fileStorage[currentSpecialization][currentGrade][currentSubject]) {
+                fileStorage[currentSpecialization][currentGrade][currentSubject] = {
+                    images: [],
+                    files: []
+                };
+            }
+            
+            const files = fileStorage[currentSpecialization][currentGrade][currentSubject];
+            
+            // Display images with delete option
+            if (files.images.length > 0) {
+                files.images.forEach((image, index) => {
+                    const imageCard = createImageCard(image, true, index);
+                    imagesContainer.appendChild(imageCard);
+                });
+            } else {
+                imagesContainer.innerHTML = '<p class="text-gray-500 col-span-full text-center py-4">لا توجد صور متاحة</p>';
+            }
+            
+            // Display files with delete option
+            if (files.files.length > 0) {
+                files.files.forEach((file, index) => {
+                    const fileCard = createFileCard(file, true, index);
+                    filesContainer.appendChild(fileCard);
+                });
+            } else {
+                filesContainer.innerHTML = '<p class="text-gray-500 col-span-full text-center py-4">لا توجد ملفات متاحة</p>';
+            }
+        }
+        
+        function createImageCard(image, isTeacher, index = -1) {
+            const card = document.createElement('div');
+            card.className = 'bg-white rounded-lg overflow-hidden shadow-md file-card transition-all';
+            
+            card.innerHTML = `
+                <div class="relative pt-[100%]">
+                    <img src="${image.url}" alt="${image.name}" class="absolute top-0 left-0 w-full h-full object-cover">
+                </div>
+                <div class="p-3">
+                    <p class="text-sm font-medium text-gray-800 truncate">${image.name}</p>
+                    <div class="flex justify-between items-center mt-2">
+                        <a href="${image.url}" target="_blank" class="text-blue-600 hover:text-blue-800 text-sm flex items-center">
+                            <i class="fas fa-eye ml-1"></i> عرض
+                        </a>
+                        <a href="${image.url}" download="${image.name}" class="text-green-600 hover:text-green-800 text-sm flex items-center">
+                            <i class="fas fa-download ml-1"></i> تحميل
+                        </a>
+                    </div>
+                    ${isTeacher ? `
+                    <div class="mt-2">
+                        <button onclick="deleteImage(${index})" class="w-full bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded text-sm flex items-center justify-center">
+                            <i class="fas fa-trash-alt ml-1"></i> حذف
+                        </button>
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+            
+            return card;
+        }
+        
+        function createFileCard(file, isTeacher, index = -1) {
+            const card = document.createElement('div');
+            card.className = 'bg-white rounded-lg overflow-hidden shadow-md file-card transition-all';
+            
+            // Get file icon based on extension
+            const fileExt = file.name.split('.').pop().toLowerCase();
+            let fileIcon = 'fa-file';
+            let fileColor = 'text-gray-500';
+            
+            if (fileExt === 'pdf') {
+                fileIcon = 'fa-file-pdf';
+                fileColor = 'text-red-500';
+            } else if (fileExt === 'doc' || fileExt === 'docx') {
+                fileIcon = 'fa-file-word';
+                fileColor = 'text-blue-500';
+            } else if (fileExt === 'ppt' || fileExt === 'pptx') {
+                fileIcon = 'fa-file-powerpoint';
+                fileColor = 'text-orange-500';
+            } else if (fileExt === 'xls' || fileExt === 'xlsx') {
+                fileIcon = 'fa-file-excel';
+                fileColor = 'text-green-500';
+            }
+            
+            card.innerHTML = `
+                <div class="p-4">
+                    <div class="flex items-center mb-3">
+                        <i class="fas ${fileIcon} ${fileColor} text-3xl ml-2"></i>
+                        <p class="text-sm font-medium text-gray-800 truncate flex-grow">${file.name}</p>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <a href="${file.url}" target="_blank" class="text-blue-600 hover:text-blue-800 text-sm flex items-center">
+                            <i class="fas fa-eye ml-1"></i> عرض
+                        </a>
+                        <a href="${file.url}" download="${file.name}" class="text-green-600 hover:text-green-800 text-sm flex items-center">
+                            <i class="fas fa-download ml-1"></i> تحميل
+                        </a>
+                    </div>
+                    ${isTeacher ? `
+                    <div class="mt-3">
+                        <button onclick="deleteFile(${index})" class="w-full bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded text-sm flex items-center justify-center">
+                            <i class="fas fa-trash-alt ml-1"></i> حذف
+                        </button>
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+            
+            return card;
+        }
+        
+        function deleteImage(index) {
+            if (confirm('هل أنت متأكد من حذف هذه الصورة؟')) {
+                const img = fileStorage[currentSpecialization][currentGrade][currentSubject].images[index];
+                if (img.url.startsWith('blob:')) {
+                    URL.revokeObjectURL(img.url);
+                }
+                fileStorage[currentSpecialization][currentGrade][currentSubject].images.splice(index, 1);
+                loadTeacherFiles();
+            }
+        }
+        
+        function deleteFile(index) {
+            if (confirm('هل أنت متأكد من حذف هذا الملف؟')) {
+                const file = fileStorage[currentSpecialization][currentGrade][currentSubject].files[index];
+                if (file.url.startsWith('blob:')) {
+                    URL.revokeObjectURL(file.url);
+                }
+                fileStorage[currentSpecialization][currentGrade][currentSubject].files.splice(index, 1);
+                loadTeacherFiles();
+            }
+        }
+        
+        function setupFileUploads() {
+            // Image upload
+            const imageUpload = document.getElementById('image-upload');
+            const imagePreview = document.getElementById('image-preview');
+            const uploadImagesBtn = document.getElementById('upload-images-btn');
+            
+            let selectedImages = [];
+            
+            imageUpload.addEventListener('change', function(e) {
+                const files = Array.from(e.target.files);
+                selectedImages = files;
+                imagePreview.innerHTML = '';
+                
+                if (files.length > 0) {
+                    files.forEach(file => {
+                        if (!file.type.match('image.*')) return;
+                        
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const previewItem = document.createElement('div');
+                            previewItem.className = 'relative';
+                            previewItem.innerHTML = `
+                                <img src="${e.target.result}" class="w-full h-32 object-cover rounded-lg">
+                                <span class="absolute top-1 left-1 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">${file.name}</span>
+                            `;
+                            imagePreview.appendChild(previewItem);
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                    
+                    uploadImagesBtn.classList.remove('hidden');
+                } else {
+                    uploadImagesBtn.classList.add('hidden');
+                }
+            });
+            
+            uploadImagesBtn.addEventListener('click', function() {
+                if (selectedImages.length > 0) {
+                    // Simulate upload - in a real app, this would upload to a server
+                    selectedImages.forEach(file => {
+                        const imageName = file.name;
+                        const imageUrl = URL.createObjectURL(file);
+                        
+                        // Create a blob URL that will persist
+                        const blobUrl = URL.createObjectURL(file);
+                        fileStorage[currentSpecialization][currentGrade][currentSubject].images.push({
+                            name: imageName,
+                            url: blobUrl,
+                            file: file  // Store the file object for later reference
+                        });
+                    });
+                    
+                    // Reset upload
+                    imageUpload.value = '';
+                    imagePreview.innerHTML = '';
+                    uploadImagesBtn.classList.add('hidden');
+                    selectedImages = [];
+                    
+                    // Reload files
+                    loadTeacherFiles();
+                    
+                    alert('تم رفع الصور بنجاح');
+                }
+            });
+            
+            // File upload
+            const fileUpload = document.getElementById('file-upload');
+            const filePreview = document.getElementById('file-preview');
+            const uploadFilesBtn = document.getElementById('upload-files-btn');
+            
+            let selectedFiles = [];
+            
+            fileUpload.addEventListener('change', function(e) {
+                const files = Array.from(e.target.files);
+                selectedFiles = files;
+                filePreview.innerHTML = '';
+                
+                if (files.length > 0) {
+                    files.forEach(file => {
+                        const fileExt = file.name.split('.').pop().toLowerCase();
+                        let fileIcon = 'fa-file';
+                        let fileColor = 'text-gray-500';
+                        
+                        if (fileExt === 'pdf') {
+                            fileIcon = 'fa-file-pdf';
+                            fileColor = 'text-red-500';
+                        } else if (fileExt === 'doc' || fileExt === 'docx') {
+                            fileIcon = 'fa-file-word';
+                            fileColor = 'text-blue-500';
+                        } else if (fileExt === 'ppt' || fileExt === 'pptx') {
+                            fileIcon = 'fa-file-powerpoint';
+                            fileColor = 'text-orange-500';
+                        } else if (fileExt === 'xls' || fileExt === 'xlsx') {
+                            fileIcon = 'fa-file-excel';
+                            fileColor = 'text-green-500';
+                        }
+                        
+                        const previewItem = document.createElement('div');
+                        previewItem.className = 'flex items-center p-3 bg-gray-100 rounded-lg mb-2';
+                        previewItem.innerHTML = `
+                            <i class="fas ${fileIcon} ${fileColor} text-2xl ml-3"></i>
+                            <span class="text-sm font-medium text-gray-800 truncate flex-grow">${file.name}</span>
+                            <span class="text-xs text-gray-500">${formatFileSize(file.size)}</span>
+                        `;
+                        filePreview.appendChild(previewItem);
+                    });
+                    
+                    uploadFilesBtn.classList.remove('hidden');
+                } else {
+                    uploadFilesBtn.classList.add('hidden');
+                }
+            });
+            
+            uploadFilesBtn.addEventListener('click', function() {
+                if (selectedFiles.length > 0) {
+                    // Simulate upload - in a real app, this would upload to a server
+                    selectedFiles.forEach(file => {
+                        const fileName = file.name;
+                        const fileUrl = URL.createObjectURL(file);
+                        
+                        fileStorage[currentSpecialization][currentGrade][currentSubject].files.push({
+                            name: fileName,
+                            url: fileUrl
+                        });
+                    });
+                    
+                    // Reset upload
+                    fileUpload.value = '';
+                    filePreview.innerHTML = '';
+                    uploadFilesBtn.classList.add('hidden');
+                    selectedFiles = [];
+                    
+                    // Reload files
+                    loadTeacherFiles();
+                    
+                    alert('تم رفع الملفات بنجاح');
+                }
+            });
+        }
+        
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+    </script>
+</body>
+</html>
