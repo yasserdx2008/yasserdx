@@ -336,36 +336,50 @@
             }
         };
 
-        // الحصول على التاريخ الهجري الحالي - نسخة محسنة
+        // الحصول على التاريخ الهجري الحالي - الإصدار النهائي المصحح
         function getCurrentHijriDate() {
             const now = new Date();
             
-            // استخدام تقنية موثوقة تعمل على جميع المتصفحات
             try {
-                // طريقة بديلة تعمل بشكل أفضل
-                const hijriDateStr = new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {
+                // استخدام Intl.DateTimeFormat مع تقويم Islamic Umalqura
+                // هذا هو التقويم الرسمي للمملكة العربية السعودية
+                const hijriDateStr = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric',
                     weekday: 'long'
                 }).format(now);
                 
-                // تحويل الأرقام العربية إلى لاتينية
+                console.log("التاريخ المستلم من المتصفح:", hijriDateStr); // للمساعدة في التصحيح
+                
+                // تحويل الأرقام العربية إلى لاتينية بدقة
                 const arabicToLatin = {
                     '٠': '0', '١': '1', '٢': '2', '٣': '3', '٤': '4',
                     '٥': '5', '٦': '6', '٧': '7', '٨': '8', '٩': '9'
                 };
                 
-                // استخراج اليوم من السلسلة
+                // استخراج اليوم من السلسلة - طريقة محسنة
                 let dayNumber = 1;
-                const dayMatch = hijriDateStr.match(/[٠١٢٣٤٥٦٧٨٩]+/);
-                if (dayMatch) {
-                    const arabicDay = dayMatch[0];
-                    let latinDay = '';
-                    for (let char of arabicDay) {
-                        latinDay += arabicToLatin[char] || char;
+                
+                // البحث عن أول رقم عربي في السلسلة
+                for (let i = 0; i < hijriDateStr.length; i++) {
+                    if (arabicToLatin[hijriDateStr[i]] !== undefined) {
+                        let arabicDay = '';
+                        // تجميع جميع الأرقام العربية المتتالية
+                        while (i < hijriDateStr.length && arabicToLatin[hijriDateStr[i]] !== undefined) {
+                            arabicDay += hijriDateStr[i];
+                            i++;
+                        }
+                        
+                        if (arabicDay) {
+                            let latinDay = '';
+                            for (let char of arabicDay) {
+                                latinDay += arabicToLatin[char];
+                            }
+                            dayNumber = parseInt(latinDay) || 1;
+                        }
+                        break;
                     }
-                    dayNumber = parseInt(latinDay) || 1;
                 }
                 
                 // استخراج اسم الشهر
@@ -385,19 +399,33 @@
                 
                 // استخراج السنة
                 let hijriYear = '1445';
-                const yearMatch = hijriDateStr.match(/[٠١٢٣٤٥٦٧٨٩]+\s*هـ/);
-                if (yearMatch) {
-                    const arabicYear = yearMatch[0].replace('هـ', '').trim();
-                    let latinYear = '';
-                    for (let char of arabicYear) {
-                        latinYear += arabicToLatin[char] || char;
+                // البحث عن السنة بعد اسم الشهر
+                const monthIndex = hijriDateStr.indexOf(monthName);
+                if (monthIndex !== -1) {
+                    const afterMonth = hijriDateStr.substring(monthIndex + monthName.length);
+                    for (let i = 0; i < afterMonth.length; i++) {
+                        if (arabicToLatin[afterMonth[i]] !== undefined) {
+                            let arabicYear = '';
+                            while (i < afterMonth.length && arabicToLatin[afterMonth[i]] !== undefined) {
+                                arabicYear += afterMonth[i];
+                                i++;
+                            }
+                            
+                            if (arabicYear) {
+                                let latinYear = '';
+                                for (let char of arabicYear) {
+                                    latinYear += arabicToLatin[char];
+                                }
+                                hijriYear = latinYear;
+                            }
+                            break;
+                        }
                     }
-                    hijriYear = latinYear;
                 }
                 
                 // استخراج اسم اليوم
                 const weekdayNames = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
-                let weekday = 'الخميس';
+                let weekday = 'الأحد';
                 for (const name of weekdayNames) {
                     if (hijriDateStr.includes(name)) {
                         weekday = name;
@@ -424,21 +452,21 @@
                 };
                 
             } catch (error) {
-                // في حالة الخطأ، نستخدم قيم افتراضية
                 console.error('خطأ في قراءة التاريخ الهجري:', error);
+                // في حالة الخطأ، نستخدم التاريخ الحالي من المتصفح
                 return {
                     hijri: {
                         year: '1445',
                         month: 'محرم',
-                        day: 1,
-                        weekday: 'الخميس'
+                        day: new Date().getDate(), // يوم الشهر الحالي
+                        weekday: ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'][new Date().getDay()]
                     },
-                    gregorian: new Intl.DateTimeFormat('ar-SA').format(now)
+                    gregorian: new Intl.DateTimeFormat('ar-SA').format(new Date())
                 };
             }
         }
 
-        // تحويل اسم الشهر الهجري إلى رقم - نسخة محسنة
+        // تحويل اسم الشهر الهجري إلى رقم
         function hijriMonthNameToNumber(monthName) {
             const monthMap = {
                 'محرم': 1,
@@ -598,4 +626,4 @@
         });
     </script>
 </body>
-    </html>
+</html>
