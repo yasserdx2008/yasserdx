@@ -366,7 +366,9 @@
                         hijriDate.month = part.value;
                         break;
                     case 'day':
-                        hijriDate.day = parseInt(part.value);
+                        // التصحيح هنا: إضافة fallback لمنع NaN
+                        const dayNumber = parseInt(part.value);
+                        hijriDate.day = isNaN(dayNumber) ? 1 : dayNumber;
                         break;
                     case 'weekday':
                         hijriDate.weekday = part.value;
@@ -542,5 +544,4 @@
         });
     </script>
 </body>
-</html>
-```
+                            </html>
