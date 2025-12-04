@@ -6,62 +6,454 @@
     <title>أعمال اليوم الهجري</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
             font-family: 'Tajawal', sans-serif;
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
+            padding: 20px;
+            color: #333;
         }
         
-        .islamic-pattern {
-            background-color: #0d9488;
-            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%231976d2' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
         }
         
-        .calendar-card {
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
         }
         
-        .calendar-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
-        }
-        
-        .arabic-date {
-            font-size: 2.5rem;
-            line-height: 1.2;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
-        }
-        
-        .hijri-month-name {
+        h1 {
             color: #0d9488;
-            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .date-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .hijri-date {
+            font-size: 2rem;
+            color: #0d9488;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .gregorian-date {
+            color: #666;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        
+        .date-details {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .date-item {
+            background: #f0f9ff;
+            padding: 15px;
+            border-radius: 10px;
+            min-width: 120px;
+        }
+        
+        .date-label {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .date-value {
+            color: #0d9488;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .works-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .works-title {
+            color: #0d9488;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            text-align: center;
         }
         
         .works-content {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 12px;
-            padding: 1.5rem;
             line-height: 1.8;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            max-height: 300px;
-            overflow-y: auto;
+            font-size: 1.1rem;
+            text-align: justify;
         }
         
-        .works-content::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        .works-content::-webkit-scrollbar-track {
-            background: #f1f1f1;
+        .no-works {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
             border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            color: #856404;
         }
         
-        .works-content::-webkit-scrollbar-thumb {
-            background: #0d9488;
-            border-radius: 10px;
+        footer {
+            text-align: center;
+            color: #666;
+            margin-top: 40px;
+            padding: 20px;
+            border-top: 1px solid #ddd;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .hijri-date {
+                font-size: 1.5rem;
+            }
+            
+            .date-details {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .date-item {
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-mosque"></i> أعمال اليوم الهجري</h1>
+            <p>اعرف أعمال وفضائل اليوم حسب التقويم الهجري الإسلامي</p>
+        </header>
+        
+        <div class="date-card">
+            <div class="hijri-date" id="hijriDate">جاري تحميل التاريخ...</div>
+            <div class="gregorian-date" id="gregorianDate"></div>
+            
+            <div class="date-details">
+                <div class="date-item">
+                    <div class="date-label">اليوم</div>
+                    <div class="date-value" id="hijriDay">--</div>
+                </div>
+                <div class="date-item">
+                    <div class="date-label">الشهر</div>
+                    <div class="date-value" id="hijriMonth">--</div>
+                </div>
+                <div class="date-item">
+                    <div class="date-label">السنة</div>
+                    <div class="date-value" id="hijriYear">--</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="works-card">
+            <h2 class="works-title"><i class="fas fa-tasks"></i> أعمال اليوم</h2>
+            <div class="works-content" id="worksContainer">
+                جاري تحميل أعمال اليوم...
+            </div>
+        </div>
+        
+        <footer>
+            <p>يتم تحديد التاريخ الهجري مباشرة من جهازك باستخدام JavaScript</p>
+            <p>جميع الأعمال مأخوذة من المصادر الإسلامية المعتمدة</p>
+        </footer>
+    </div>
+
+    <script>
+        // قاعدة البيانات المحلية للأعمال
+        const hijriWorks = {
+            // شهر محرم
+            1: {
+                name: "محرم",
+                1: `اليوم الأول من محرم (رأس السنة الهجرية)
+                
+                • صيام هذا اليوم مستحب
+                • الإكثار من الصلاة على النبي محمد صلى الله عليه وسلم
+                • تذكر هجرة النبي صلى الله عليه وسلم والاعتبار بها
+                • الدعاء بدعاء أول الشهر`,
+                
+                10: `اليوم العاشر من محرم (عاشوراء)
+                
+                • صيام هذا اليوم له فضل كبير
+                • قراءة زيارة عاشوراء
+                • الإكثار من الاستغفار والدعاء
+                • الصدقة والإحسان إلى الفقراء
+                • زيارة الإمام الحسين عليه السلام أو قراءة الزيارة`,
+                
+                15: `اليوم الخامس عشر من محرم
+                
+                • صيام هذا اليوم مستحب
+                • قراءة سورة الحمد وسورة التوحيد 100 مرة
+                • الدعاء بدعاء اليوم الخامس عشر`
+            },
+            
+            // شهر رجب
+            7: {
+                name: "رجب",
+                1: `اليوم الأول من رجب (بداية الأشهر الحرم)
+                
+                • الصيام مستحب
+                • غسل الاستحباب
+                • زيارة الإمام الحسين عليه السلام
+                • قراءة دعاء أول رجب`,
+                
+                13: `اليوم الثالث عشر من رجب (مولد الإمام علي عليه السلام)
+                
+                • الصيام مستحب
+                • غسل الاستحباب
+                • زيارة الإمام علي عليه السلام
+                • قراءة المناجاة الشعبانية`,
+                
+                27: `اليوم السابع والعشرون من رجب (ليلة الإسراء والمعراج)
+                
+                • إحياء الليل بالعبادة
+                • الصلاة 12 ركعة
+                • قراءة دعاء الإسراء والمعراج
+                • الصيام نهاره مستحب`
+            },
+            
+            // شهر شعبان
+            8: {
+                name: "شعبان",
+                3: `اليوم الثالث من شعبان (مولد الإمام الحسين عليه السلام)
+                
+                • الصيام مستحب
+                • غسل الاستحباب
+                • زيارة الإمام الحسين عليه السلام
+                • إطعام المؤمنين`,
+                
+                15: `اليوم الخامس عشر من شعبان (مولد الإمام المهدي عجل الله فرجه)
+                
+                • غسل الاستحباب
+                • إحياء الليل بالعبادة
+                • زيارة الإمام الحسين عليه السلام
+                • قراءة دعاء كميل
+                • الصيام نهاره مستحب جداً`
+            },
+            
+            // شهر رمضان
+            9: {
+                name: "رمضان",
+                1: `اليوم الأول من رمضان
+                
+                • نية صيام الشهر كاملاً
+                • قراءة دعاء الافتتاح
+                • الإكثير من الاستغفار والتسبيح
+                • صلاة التراويح`,
+                
+                15: `اليوم الخامس عشر من رمضان
+                
+                • صيام هذا اليوم مستحب
+                • غسل الاستحباب
+                • زيارة الإمام الحسين عليه السلام
+                • قراءة سورة الحمد وسورة التوحيد 100 مرة`,
+                
+                19: `اليوم التاسع عشر من رمضان (ليلة القدر الأولى)
+                
+                • إحياء الليل بالعبادة
+                • قراءة دعاء الجوشن الكبير
+                • قراءة سورة العنكبوت والروم والدخان
+                • الصلاة 100 ركعة`,
+                
+                21: `اليوم الحادي والعشرون من رمضان (ليلة القدر الثانية)
+                
+                • إحياء الليل بالعبادة
+                • غسل الاستحباب
+                • قراءة دعاء الجوشن الصغير
+                • قراءة سورة القدر 1000 مرة`,
+                
+                23: `اليوم الثالث والعشرون من رمضان (ليلة القدر الثالثة)
+                
+                • إحياء الليل بالعبادة
+                • غسل الاستحباب
+                • قراءة سورة القدر
+                • الدعاء بدعاء اليوم الثالث والعشرين`
+            },
+            
+            // شهر ذو الحجة
+            12: {
+                name: "ذو الحجة",
+                9: `اليوم التاسع من ذو الحجة (يوم عرفة)
+                
+                • الصيام مستحب جداً
+                • غسل الاستحباب
+                • قراءة دعاء عرفة للإمام الحسين عليه السلام
+                • الإكثار من الاستغفار والدعاء`,
+                
+                10: `اليوم العاشر من ذو الحجة (عيد الأضحى)
+                
+                • غسل العيد
+                • صلاة العيد
+                • ذبح الأضحية
+                • زيارة الإمام الحسين عليه السلام`,
+                
+                18: `اليوم الثامن عشر من ذو الحجة (عيد الغدير)
+                
+                • الصيام مستحب
+                • غسل الاستحباب
+                • زيارة أمير المؤمنين عليه السلام
+                • قراءة دعاء العهد
+                • إطعام المؤمنين`
+            }
+        };
+
+        // دالة موثوقة للحصول على التاريخ الهجري
+        function getHijriDate() {
+            const today = new Date();
+            
+            // استخدام Intl.DateTimeFormat للحصول على التاريخ الهجري
+            const formatter = new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            
+            let hijriString = formatter.format(today);
+            
+            // استخراج الرقم من السلسلة (اليوم)
+            const dayMatch = hijriString.match(/(\d+)/);
+            const day = dayMatch ? parseInt(dayMatch[1]) : 1;
+            
+            // استخراج اسم الشهر
+            const monthNames = {
+                'محرم': 1, 'صفر': 2, 'ربيع الأول': 3,
+                'ربيع الآخر': 4, 'ربيع الثاني': 4,
+                'جمادى الأولى': 5, 'جمادى الأول': 5,
+                'جمادى الآخرة': 6, 'جمادى الثاني': 6,
+                'رجب': 7, 'شعبان': 8, 'رمضان': 9,
+                'شوال': 10, 'ذو القعدة': 11,
+                'ذو الحجة': 12
+            };
+            
+            let monthNumber = 1;
+            let monthName = "محرم";
+            
+            // البحث عن اسم الشهر في السلسلة
+            for (const [name, number] of Object.entries(monthNames)) {
+                if (hijriString.includes(name)) {
+                    monthNumber = number;
+                    monthName = name;
+                    break;
+                }
+            }
+            
+            // استخراج السنة
+            const yearMatch = hijriString.match(/(\d+)\s*هـ/);
+            const year = yearMatch ? yearMatch[1] : "1445";
+            
+            return {
+                day: day,
+                month: monthNumber,
+                monthName: monthName,
+                year: year,
+                fullDate: hijriString
+            };
+        }
+
+        // دالة للحصول على التاريخ الميلادي
+        function getGregorianDate() {
+            const today = new Date();
+            const formatter = new Intl.DateTimeFormat('ar-SA', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            return formatter.format(today);
+        }
+
+        // دالة لعرض أعمال اليوم
+        function displayTodaysWorks(hijriMonth, hijriDay) {
+            const worksContainer = document.getElementById('worksContainer');
+            
+            // التحقق من وجود أعمال لهذا اليوم
+            if (hijriWorks[hijriMonth] && hijriWorks[hijriMonth][hijriDay]) {
+                worksContainer.innerHTML = `
+                    <div style="white-space: pre-line; text-align: right;">
+                        <h3 style="color: #0d9488; margin-bottom: 15px;">اليوم ${hijriDay} من ${hijriWorks[hijriMonth].name}</h3>
+                        ${hijriWorks[hijriMonth][hijriDay]}
+                    </div>
+                `;
+            } else {
+                worksContainer.innerHTML = `
+                    <div class="no-works">
+                        <i class="fas fa-calendar-times" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                        <h3 style="margin-bottom: 10px;">لا توجد أعمال خاصة لهذا اليوم</h3>
+                        <p>لم يتم تحديد أعمال خاصة لليوم ${hijriDay} من شهر ${hijriWorks[hijriMonth] ? hijriWorks[hijriMonth].name : 'هذا'}</p>
+                        <p style="margin-top: 15px;">يمكنك الاجتهاد في العبادة العامة مثل:</p>
+                        <ul style="text-align: right; margin-top: 10px; padding-right: 20px;">
+                            <li>• الإكثار من الصلاة على النبي محمد صلى الله عليه وسلم</li>
+                            <li>• قراءة القرآن الكريم</li>
+                            <li>• الصدقة والإحسان إلى الآخرين</li>
+                            <li>• صلاة النوافل والدعاء</li>
+                        </ul>
+                    </div>
+                `;
+            }
+        }
+
+        // دالة رئيسية لتحديث كل شيء
+        function updatePage() {
+            try {
+                // الحصول على التواريخ
+                const hijri = getHijriDate();
+                const gregorian = getGregorianDate();
+                
+                // تحديث واجهة التاريخ
+                document.getElementById('hijriDate').textContent = hijri.fullDate;
+                document.getElementById('gregorianDate').textContent = `الميلادي: ${gregorian}`;
+                document.getElementById('hijriDay').textContent = hijri.day;
+                document.getElementById('hijriMonth').textContent = hijri.monthName;
+                document.getElementById('hijriYear').textContent = `${hijri.year} هـ`;
+                
+                // عرض أعمال اليوم
+                displayTodaysWorks(hijri.month, hijri.day);
+                
+            } catch (error) {
+                console.error('خطأ في تحديث الصفحة:', error);
+                document.getElementById('hijriDate').textContent = "خطأ في تحميل التاريخ";
+                document.getElementById('worksContainer').innerHTML = `
+                    <div class="no-works">
+                        <p>حدث خطأ في تحميل التاريخ. يرجى تحديث الصفحة.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // تشغيل التطبيق عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', updatePage);
+        
+        // تحديث تلقائي كل ساعة (اختياري)
+        setInterval(updatePage, 3600000);
+    </script>
+</body>
+</html>            border-radius: 10px;
         }
         
         .no-works {
@@ -543,5 +935,4 @@
     </script>
 </body>
 </html>
-```
 
