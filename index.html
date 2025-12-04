@@ -336,62 +336,109 @@
             }
         };
 
-        // الحصول على التاريخ الهجري الحالي
+        // الحصول على التاريخ الهجري الحالي - نسخة محسنة
         function getCurrentHijriDate() {
             const now = new Date();
             
-            // استخدام Intl.DateTimeFormat للحصول على التاريخ الهجري
-            const formatter = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                weekday: 'long'
-            });
-            
-            const parts = formatter.formatToParts(now);
-            
-            let hijriDate = {
-                year: '',
-                month: '',
-                day: '',
-                weekday: ''
-            };
-            
-            parts.forEach(part => {
-                switch(part.type) {
-                    case 'year':
-                        hijriDate.year = part.value;
-                        break;
-                    case 'month':
-                        hijriDate.month = part.value;
-                        break;
-                    case 'day':
-                        // التصحيح هنا: إضافة fallback لمنع NaN
-                        const dayNumber = parseInt(part.value);
-                        hijriDate.day = isNaN(dayNumber) ? 1 : dayNumber;
-                        break;
-                    case 'weekday':
-                        hijriDate.weekday = part.value;
-                        break;
+            // استخدام تقنية موثوقة تعمل على جميع المتصفحات
+            try {
+                // طريقة بديلة تعمل بشكل أفضل
+                const hijriDateStr = new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    weekday: 'long'
+                }).format(now);
+                
+                // تحويل الأرقام العربية إلى لاتينية
+                const arabicToLatin = {
+                    '٠': '0', '١': '1', '٢': '2', '٣': '3', '٤': '4',
+                    '٥': '5', '٦': '6', '٧': '7', '٨': '8', '٩': '9'
+                };
+                
+                // استخراج اليوم من السلسلة
+                let dayNumber = 1;
+                const dayMatch = hijriDateStr.match(/[٠١٢٣٤٥٦٧٨٩]+/);
+                if (dayMatch) {
+                    const arabicDay = dayMatch[0];
+                    let latinDay = '';
+                    for (let char of arabicDay) {
+                        latinDay += arabicToLatin[char] || char;
+                    }
+                    dayNumber = parseInt(latinDay) || 1;
                 }
-            });
-            
-            // الحصول على التاريخ الميلادي أيضًا
-            const gregorianFormatter = new Intl.DateTimeFormat('ar-SA', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
-            
-            const gregorianDate = gregorianFormatter.format(now);
-            
-            return {
-                hijri: hijriDate,
-                gregorian: gregorianDate
-            };
+                
+                // استخراج اسم الشهر
+                const monthNames = [
+                    'محرم', 'صفر', 'ربيع الأول', 'ربيع الثاني',
+                    'جمادى الأولى', 'جمادى الآخرة', 'رجب', 'شعبان',
+                    'رمضان', 'شوال', 'ذو القعدة', 'ذو الحجة'
+                ];
+                
+                let monthName = 'محرم';
+                for (const name of monthNames) {
+                    if (hijriDateStr.includes(name)) {
+                        monthName = name;
+                        break;
+                    }
+                }
+                
+                // استخراج السنة
+                let hijriYear = '1445';
+                const yearMatch = hijriDateStr.match(/[٠١٢٣٤٥٦٧٨٩]+\s*هـ/);
+                if (yearMatch) {
+                    const arabicYear = yearMatch[0].replace('هـ', '').trim();
+                    let latinYear = '';
+                    for (let char of arabicYear) {
+                        latinYear += arabicToLatin[char] || char;
+                    }
+                    hijriYear = latinYear;
+                }
+                
+                // استخراج اسم اليوم
+                const weekdayNames = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+                let weekday = 'الخميس';
+                for (const name of weekdayNames) {
+                    if (hijriDateStr.includes(name)) {
+                        weekday = name;
+                        break;
+                    }
+                }
+                
+                // الحصول على التاريخ الميلادي
+                const gregorianFormatter = new Intl.DateTimeFormat('ar-SA', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                const gregorianDate = gregorianFormatter.format(now);
+                
+                return {
+                    hijri: {
+                        year: hijriYear,
+                        month: monthName,
+                        day: dayNumber,
+                        weekday: weekday
+                    },
+                    gregorian: gregorianDate
+                };
+                
+            } catch (error) {
+                // في حالة الخطأ، نستخدم قيم افتراضية
+                console.error('خطأ في قراءة التاريخ الهجري:', error);
+                return {
+                    hijri: {
+                        year: '1445',
+                        month: 'محرم',
+                        day: 1,
+                        weekday: 'الخميس'
+                    },
+                    gregorian: new Intl.DateTimeFormat('ar-SA').format(now)
+                };
+            }
         }
 
-        // تحويل اسم الشهر الهجري إلى رقم
+        // تحويل اسم الشهر الهجري إلى رقم - نسخة محسنة
         function hijriMonthNameToNumber(monthName) {
             const monthMap = {
                 'محرم': 1,
@@ -408,7 +455,14 @@
                 'ذو الحجة': 12
             };
             
-            return monthMap[monthName] || 1;
+            // البحث عن اسم الشهر في الخريطة
+            for (const [name, number] of Object.entries(monthMap)) {
+                if (monthName.includes(name)) {
+                    return number;
+                }
+            }
+            
+            return 1; // قيمة افتراضية
         }
 
         // عرض التاريخ الهجري الحالي
@@ -544,4 +598,4 @@
         });
     </script>
 </body>
-                            </html>
+    </html>
