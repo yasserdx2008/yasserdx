@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>أعمال اليوم الهجري</title>
+    <title>نور الولاية</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -100,7 +100,7 @@
         <!-- العنوان الرئيسي -->
         <header class="text-center mb-10">
             <h1 class="text-4xl font-bold text-gray-800 mb-3">
-                <i class="fas fa-mosque text-teal-600 mr-2"></i>أعمال اليوم الهجري
+                <i class="fas fa-mosque text-teal-600 mr-2"></i>نور الولاية
             </h1>
             <p class="text-gray-600 text-lg">اعرف أعمال وفضائل اليوم حسب التقويم الهجري الإسلامي</p>
         </header>
@@ -159,7 +159,6 @@
                 
                 <!-- ملاحظة -->
                 <div class="mt-6 text-center text-gray-500 text-sm">
-                    <p><i class="fas fa-info-circle mr-1"></i>يتم تحديد التاريخ الهجري مباشرة من جهازك باستخدام تقويم <span class="font-semibold">Islamic Umalqura</span></p>
                 </div>
             </div>
         </div>
@@ -203,13 +202,6 @@
                 </button>
             </div>
         </div>
-        
-        <!-- معلومات التطبيق -->
-        <footer class="text-center text-gray-600 mt-12 pt-6 border-t border-gray-200">
-            <p><i class="fas fa-code mr-1"></i>تم بناؤه باستخدام HTML، CSS و JavaScript فقط</p>
-            <p class="mt-2">يعمل 100% على GitHub Pages دون الحاجة لخادم أو API خارجي</p>
-            <p class="mt-4 text-sm">© أعمال اليوم الهجري - 2023</p>
-        </footer>
     </div>
 
     <script>
@@ -336,13 +328,12 @@
             }
         };
 
-        // الحصول على التاريخ الهجري الحالي - الإصدار النهائي المصحح
+        // الحصول على التاريخ الهجري الحالي مع إضافة +1 للرقم فقط
         function getCurrentHijriDate() {
             const now = new Date();
             
             try {
                 // استخدام Intl.DateTimeFormat مع تقويم Islamic Umalqura
-                // هذا هو التقويم الرسمي للمملكة العربية السعودية
                 const hijriDateStr = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', {
                     year: 'numeric',
                     month: 'long',
@@ -350,22 +341,18 @@
                     weekday: 'long'
                 }).format(now);
                 
-                console.log("التاريخ المستلم من المتصفح:", hijriDateStr); // للمساعدة في التصحيح
-                
-                // تحويل الأرقام العربية إلى لاتينية بدقة
+                // تحويل الأرقام العربية إلى لاتينية
                 const arabicToLatin = {
                     '٠': '0', '١': '1', '٢': '2', '٣': '3', '٤': '4',
                     '٥': '5', '٦': '6', '٧': '7', '٨': '8', '٩': '9'
                 };
                 
-                // استخراج اليوم من السلسلة - طريقة محسنة
+                // استخراج اليوم من السلسلة
                 let dayNumber = 1;
                 
-                // البحث عن أول رقم عربي في السلسلة
                 for (let i = 0; i < hijriDateStr.length; i++) {
                     if (arabicToLatin[hijriDateStr[i]] !== undefined) {
                         let arabicDay = '';
-                        // تجميع جميع الأرقام العربية المتتالية
                         while (i < hijriDateStr.length && arabicToLatin[hijriDateStr[i]] !== undefined) {
                             arabicDay += hijriDateStr[i];
                             i++;
@@ -399,7 +386,6 @@
                 
                 // استخراج السنة
                 let hijriYear = '1445';
-                // البحث عن السنة بعد اسم الشهر
                 const monthIndex = hijriDateStr.indexOf(monthName);
                 if (monthIndex !== -1) {
                     const afterMonth = hijriDateStr.substring(monthIndex + monthName.length);
@@ -433,6 +419,12 @@
                     }
                 }
                 
+                // =============================================
+                // هنا نضيف +1 فقط للرقم
+                // =============================================
+                // نضيف 1 للرقم فقط
+                let adjustedDay = dayNumber + 1;
+                
                 // الحصول على التاريخ الميلادي
                 const gregorianFormatter = new Intl.DateTimeFormat('ar-SA', {
                     year: 'numeric',
@@ -445,7 +437,7 @@
                     hijri: {
                         year: hijriYear,
                         month: monthName,
-                        day: dayNumber,
+                        day: adjustedDay, // هنا نستخدم الرقم بعد إضافة +1
                         weekday: weekday
                     },
                     gregorian: gregorianDate
@@ -454,11 +446,12 @@
             } catch (error) {
                 console.error('خطأ في قراءة التاريخ الهجري:', error);
                 // في حالة الخطأ، نستخدم التاريخ الحالي من المتصفح
+                const day = new Date().getDate();
                 return {
                     hijri: {
                         year: '1445',
                         month: 'محرم',
-                        day: new Date().getDate(), // يوم الشهر الحالي
+                        day: day + 1, // نضيف +1 هنا أيضاً
                         weekday: ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'][new Date().getDay()]
                     },
                     gregorian: new Intl.DateTimeFormat('ar-SA').format(new Date())
@@ -483,14 +476,13 @@
                 'ذو الحجة': 12
             };
             
-            // البحث عن اسم الشهر في الخريطة
             for (const [name, number] of Object.entries(monthMap)) {
                 if (monthName.includes(name)) {
                     return number;
                 }
             }
             
-            return 1; // قيمة افتراضية
+            return 1;
         }
 
         // عرض التاريخ الهجري الحالي
