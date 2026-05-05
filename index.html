@@ -294,7 +294,7 @@
                 <h1>Gemini AI</h1>
             </div>
             <div class="key-status">
-                <i class="fas fa-check-circle"></i> Gemini API | محلي بالكامل
+                <i class="fas fa-check-circle"></i> Gemini 1.5 Pro | يعمل
             </div>
         </div>
         <div class="messages-area" id="messagesContainer"></div>
@@ -308,19 +308,22 @@
 </div>
 
 <script>
-    // ====================== مفتاح Gemini API مضمن ======================
+    // ====================== مفتاح Gemini API (خاص بك) ======================
     const GEMINI_API_KEY = "AIzaSyDeXn7XfJFLLFTx76NC8apmOhWcFseko_c";
+    
+    // استخدام النموذج الصحيح - gemini-1.5-pro (متوفر وأفضل)
+    const GEMINI_MODEL = "gemini-1.5-pro";
     
     // ====================== إدارة المحادثات ======================
     let conversations = [];
     let currentConversationId = null;
     
     function saveConversations() {
-        localStorage.setItem('gemini_chats_final', JSON.stringify(conversations));
+        localStorage.setItem('gemini_chats_working', JSON.stringify(conversations));
     }
     
     function loadConversations() {
-        const stored = localStorage.getItem('gemini_chats_final');
+        const stored = localStorage.getItem('gemini_chats_working');
         if (stored) {
             try {
                 conversations = JSON.parse(stored);
@@ -331,7 +334,7 @@
                 id: Date.now().toString(),
                 title: "المحادثة الأولى",
                 date: new Date().toLocaleString(),
-                messages: [{ role: "model", content: "🌟 مرحباً! أنا Gemini من Google.\n\n✅ المفتاح مضمن بالفعل - يعمل مباشرة!\n💾 محادثاتك محفوظة على هاتفك فقط\n🎯 اسألني أي شيء وسأجيبك." }]
+                messages: [{ role: "model", content: "🌟 مرحباً! أنا Gemini 1.5 Pro من Google.\n\n✅ مفتاح API يعمل مباشرة!\n💾 جميع محادثاتك محفوظة على هاتفك فقط\n🎯 اسألني أي شيء - أجيبك فوراً." }]
             }];
             saveConversations();
         }
@@ -415,7 +418,7 @@
             id: newId,
             title: "محادثة جديدة",
             date: new Date().toLocaleString(),
-            messages: [{ role: "model", content: "✨ بدأت محادثة جديدة! اسألني ما شئت." }]
+            messages: [{ role: "model", content: "✨ محادثة جديدة! اسألني ما شئت." }]
         });
         saveConversations();
         currentConversationId = newId;
@@ -449,7 +452,7 @@
         container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
     }
     
-    // ====================== الاتصال بـ Gemini API ======================
+    // ====================== الاتصال بـ Gemini API (النموذج الصحيح) ======================
     let isLoading = false;
     
     function showTyping() {
@@ -468,15 +471,22 @@
     }
     
     async function sendToGemini(messages) {
+        // تحويل الرسائل إلى صيغة Gemini المناسبة
         const geminiMessages = [];
         for (const msg of messages) {
-            geminiMessages.push({
-                role: msg.role === 'user' ? 'user' : 'model',
-                parts: [{ text: msg.content }]
-            });
+            // تجاهل أي رسائل غير user أو model
+            if (msg.role === 'user' || msg.role === 'model') {
+                geminiMessages.push({
+                    role: msg.role === 'user' ? 'user' : 'model',
+                    parts: [{ text: msg.content }]
+                });
+            }
         }
         
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+        // استخدام المسار الصحيح مع النموذج gemini-1.5-pro
+        const url = `https://generativelanguage.googleapis.com/v1/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+        
+        console.log("جاري الاتصال بـ:", url);
         
         const response = await fetch(url, {
             method: "POST",
@@ -485,19 +495,22 @@
                 contents: geminiMessages,
                 generationConfig: {
                     temperature: 0.7,
-                    maxOutputTokens: 800
+                    maxOutputTokens: 800,
+                    topP: 0.9,
+                    topK: 40
                 }
             })
         });
         
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
-            throw new Error(errorData.error?.message || `خطأ ${response.status}`);
+            console.error("خطأ API:", errorData);
+            throw new Error(errorData.error?.message || `HTTP ${response.status}`);
         }
         
         const data = await response.json();
         const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (!reply) throw new Error("لم يتم الحصول على رد");
+        if (!reply) throw new Error("لم يتم الحصول على رد من Gemini");
         return reply;
     }
     
@@ -508,11 +521,13 @@
         const text = input.value.trim();
         if (!text) return;
         input.value = '';
+        input.style.height = 'auto';
         
         addMessageToCurrent('user', text);
         
         const conv = conversations.find(c => c.id === currentConversationId);
-        const context = conv.messages.slice(-12).map(m => ({ role: m.role, content: m.content }));
+        // أخذ آخر 15 رسالة للسياق
+        const context = conv.messages.slice(-15).map(m => ({ role: m.role, content: m.content }));
         
         isLoading = true;
         showTyping();
@@ -523,10 +538,55 @@
             addMessageToCurrent('model', reply);
         } catch (error) {
             hideTyping();
-            addMessageToCurrent('model', `⚠️ خطأ: ${error.message}\n\nتأكد من اتصالك بالإنترنت ومفتاح API صحيح.`);
+            console.error("خطأ مفصل:", error);
+            let errorMsg = `⚠️ خطأ: ${error.message}\n\n`;
+            if (error.message.includes("not found") || error.message.includes("model")) {
+                errorMsg += "🔧 مشكلة في النموذج. جاري المحاولة بنموذج بديل...\n";
+                // محاولة استخدام نموذج بديل
+                try {
+                    const fallbackReply = await sendToGeminiFallback(context);
+                    addMessageToCurrent('model', fallbackReply);
+                    return;
+                } catch(e) {
+                    errorMsg = `⚠️ خطأ: ${e.message}\n\nتأكد من صحة مفتاح API واتصال الإنترنت.`;
+                }
+            }
+            addMessageToCurrent('model', errorMsg);
         } finally {
             isLoading = false;
         }
+    }
+    
+    // نموذج بديل احتياطي
+    async function sendToGeminiFallback(messages) {
+        const geminiMessages = [];
+        for (const msg of messages) {
+            if (msg.role === 'user' || msg.role === 'model') {
+                geminiMessages.push({
+                    role: msg.role === 'user' ? 'user' : 'model',
+                    parts: [{ text: msg.content }]
+                });
+            }
+        }
+        
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`;
+        
+        const response = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                contents: geminiMessages,
+                generationConfig: { temperature: 0.7, maxOutputTokens: 800 }
+            })
+        });
+        
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error?.message || `HTTP ${response.status}`);
+        }
+        
+        const data = await response.json();
+        return data.candidates?.[0]?.content?.parts?.[0]?.text || "عذراً، لم أستطع الرد.";
     }
     
     // ====================== أحداث ======================
@@ -545,6 +605,7 @@
         this.style.height = Math.min(this.scrollHeight, 120) + 'px';
     });
     
+    // بدء التطبيق
     loadConversations();
 </script>
 </body>
