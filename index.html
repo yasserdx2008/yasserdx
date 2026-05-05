@@ -18,7 +18,8 @@
             background: linear-gradient(135deg, #0a0f2a 0%, #060b1a 100%);
             min-height: 100vh;
             width: 100vw;
-            overflow: hidden;
+            /* تم تعديل overflow هنا للسماح بالتمرير إذا لزم الأمر */
+            overflow-x: hidden; 
             position: relative;
         }
 
@@ -180,6 +181,7 @@
             flex-direction: column;
             background: rgba(10, 15, 25, 0.7);
             backdrop-filter: blur(10px);
+            height: 100vh; /* التأكد من ملء الطول */
         }
 
         .chat-header {
@@ -342,12 +344,13 @@
             30% { transform: translateY(-8px); opacity: 1; }
         }
 
-        /* ========== منطقة الإدخال - باستخدام div contenteditable ========== */
+        /* ========== منطقة الإدخال ========== */
         .input-area {
             padding: 1rem 1.5rem 1.8rem;
             background: rgba(10, 15, 25, 0.95);
             backdrop-filter: blur(20px);
             border-top: 1px solid rgba(59,130,246,0.2);
+            flex-shrink: 0; /* منع منطقة الإدخال من التقلص */
         }
 
         .input-wrapper {
@@ -368,7 +371,6 @@
             background: rgba(15, 23, 42, 1);
         }
 
-        /* editable div - الحل النهائي لجميع المتصفحات */
         .message-input {
             flex: 1;
             background: transparent;
@@ -567,10 +569,8 @@
     </div>
 
     <script>
-        // ====================== مفتاح Groq API ======================
         const GROQ_API_KEY = "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";
         
-        // ====================== المحادثات ======================
         let conversations = [];
         let currentId = null;
         let isLoading = false;
@@ -712,7 +712,6 @@
             container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
         }
         
-        // ====================== الاتصال بـ Groq API ======================
         function showTyping() {
             const container = document.getElementById('messagesContainer');
             const typingDiv = document.createElement('div');
@@ -752,7 +751,6 @@
             return data.choices[0].message.content;
         }
         
-        // الحصول على النص من الـ div القابل للتحرير
         function getInputText() {
             const inputDiv = document.getElementById('userInput');
             return inputDiv.innerText.trim();
@@ -792,7 +790,6 @@
             }
         }
         
-        // ====================== الأحداث ======================
         document.getElementById('sendBtn').addEventListener('click', sendMessage);
         document.getElementById('newChatBtn').addEventListener('click', newChat);
         
@@ -813,7 +810,6 @@
         
         const inputDiv = document.getElementById('userInput');
         
-        // دعم إرسال الرسالة بالضغط على Enter
         inputDiv.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -821,7 +817,6 @@
             }
         });
         
-        // ضبط ارتفاع تلقائي
         function autoResize() {
             inputDiv.style.height = 'auto';
             const newHeight = Math.min(inputDiv.scrollHeight, 150);
