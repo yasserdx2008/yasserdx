@@ -242,7 +242,6 @@
             gap: 1.2rem;
         }
 
-        /* تخصيص شريط التمرير */
         .messages-area::-webkit-scrollbar {
             width: 5px;
         }
@@ -403,21 +402,23 @@
             box-shadow: 0 6px 20px rgba(59,130,246,0.4);
         }
 
-        /* زر القائمة للهواتف */
+        /* ========== زر القائمة - تم إصلاح موضعه ========== */
         .menu-toggle {
             display: none;
             position: fixed;
-            top: 15px;
-            right: 15px;
+            top: 16px;
+            right: 16px;
             background: linear-gradient(135deg, #3b82f6, #1d4ed8);
             border: none;
             color: white;
-            width: 48px;
-            height: 48px;
+            width: 46px;
+            height: 46px;
             border-radius: 50%;
-            z-index: 30;
+            z-index: 100;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            font-size: 1.2rem;
         }
 
         /* ========== استجابة للموبايل والتابلت ========== */
@@ -428,19 +429,23 @@
                 top: 0;
                 height: 100%;
                 width: 280px;
-                z-index: 40;
+                z-index: 50;
+                background: rgba(15, 23, 42, 0.95);
             }
             .sidebar.open {
                 right: 0;
             }
             .menu-toggle {
-                display: block;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
             .message {
                 max-width: 95%;
             }
             .messages-area {
                 padding: 1rem;
+                padding-top: 1rem;
             }
             .input-area {
                 padding: 1rem;
@@ -454,6 +459,10 @@
             .logo-icon {
                 font-size: 1.5rem;
             }
+            .key-status {
+                padding: 5px 10px;
+                font-size: 0.65rem;
+            }
         }
 
         @media (max-width: 480px) {
@@ -466,22 +475,41 @@
                 height: 34px;
                 font-size: 0.8rem;
             }
+            .chat-header {
+                padding: 0.7rem 0.8rem;
+            }
+            .key-status {
+                display: none;
+            }
         }
 
-        /* أنيميشن إضافية */
-        @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
+        /* تعديل للشاشات المتوسطة */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .sidebar {
+                width: 260px;
+            }
+            .message {
+                max-width: 85%;
+            }
         }
 
         .bubble:not(.user-message .bubble):hover {
             border-color: rgba(59,130,246,0.4);
             transform: translateX(3px);
         }
+
+        /* منع التداخل مع زر القائمة في الموبايل */
+        @media (max-width: 768px) {
+            .chat-header {
+                padding-right: 60px;
+            }
+        }
     </style>
 </head>
 <body>
-    <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+    <button class="menu-toggle" id="menuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
     
     <div class="fullscreen-chat">
         <div class="sidebar" id="sidebar">
@@ -733,8 +761,21 @@
         // ====================== الأحداث ======================
         document.getElementById('sendBtn').addEventListener('click', sendMessage);
         document.getElementById('newChatBtn').addEventListener('click', newChat);
-        document.getElementById('menuToggle').addEventListener('click', () => {
-            document.getElementById('sidebar').classList.toggle('open');
+        
+        const menuBtn = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        
+        menuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+        });
+        
+        // إغلاق القائمة عند النقر خارجها في الموبايل
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 768) {
+                if (!sidebar.contains(e.target) && !menuBtn.contains(e.target) && sidebar.classList.contains('open')) {
+                    sidebar.classList.remove('open');
+                }
+            }
         });
         
         const textarea = document.getElementById('userInput');
