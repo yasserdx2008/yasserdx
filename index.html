@@ -3,11 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ذكي GPT - محادثاتك المحفوظة محلياً</title>
-    <!-- Font Awesome Icons -->
+    <title>Gemini AI - محادثاتك المحفوظة</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -23,10 +21,8 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
-            animation: fadeIn 0.6s ease-out;
         }
 
-        /* حاوية رئيسية بتصميم GPT مع شريط جانبي */
         .app-wrapper {
             display: flex;
             width: 100%;
@@ -35,7 +31,6 @@
             gap: 18px;
         }
 
-        /* ========== الشريط الجانبي للمحادثات القديمة ========== */
         .sidebar {
             width: 280px;
             background: rgba(15, 19, 29, 0.75);
@@ -45,8 +40,6 @@
             flex-direction: column;
             overflow: hidden;
             border: 1px solid rgba(255,255,255,0.06);
-            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.4);
-            transition: all 0.3s;
         }
 
         .sidebar-header {
@@ -58,25 +51,18 @@
         }
 
         .sidebar-header h3 {
-            font-size: 1rem;
+            font-size: 0.9rem;
             color: #e2e8f0;
-            font-weight: 500;
         }
 
         .new-chat-btn {
-            background: #3b82f6;
+            background: #ea4335;
             border: none;
             color: white;
-            width: 32px;
-            height: 32px;
+            width: 34px;
+            height: 34px;
             border-radius: 10px;
             cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .new-chat-btn:hover {
-            background: #2563eb;
-            transform: scale(1.03);
         }
 
         .conversations-list {
@@ -91,26 +77,22 @@
         .convo-item {
             background: rgba(30, 36, 50, 0.6);
             border-radius: 1rem;
-            padding: 12px;
+            padding: 10px;
             cursor: pointer;
             transition: all 0.2s;
-            border: 1px solid transparent;
         }
 
         .convo-item:hover {
-            background: rgba(59,130,246,0.2);
-            border-color: rgba(59,130,246,0.4);
-            transform: translateX(3px);
+            background: rgba(234,67,53,0.2);
         }
 
         .convo-item.active {
-            background: linear-gradient(95deg, #1e2a47, #0f172a);
-            border-right: 3px solid #3b82f6;
+            background: linear-gradient(95deg, #2a1e3a, #1a0f2a);
+            border-right: 3px solid #ea4335;
         }
 
         .convo-title {
-            font-size: 0.85rem;
-            font-weight: 500;
+            font-size: 0.8rem;
             color: #f1f5f9;
             white-space: nowrap;
             overflow: hidden;
@@ -118,7 +100,7 @@
         }
 
         .convo-date {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             color: #7e8aa2;
             margin-top: 5px;
             display: flex;
@@ -131,14 +113,8 @@
             color: #ef4444;
             cursor: pointer;
             font-size: 0.7rem;
-            opacity: 0.6;
         }
 
-        .delete-convo:hover {
-            opacity: 1;
-        }
-
-        /* ========== منطقة الدردشة الرئيسية ========== */
         .chat-container {
             flex: 1;
             background: rgba(20, 24, 36, 0.7);
@@ -167,28 +143,26 @@
 
         .logo-icon {
             font-size: 1.9rem;
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            background: linear-gradient(135deg, #ea4335, #fbbc04);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            animation: pulseGlow 2s infinite;
         }
 
         h1 {
-            font-size: 1.4rem;
-            font-weight: 600;
+            font-size: 1.3rem;
             background: linear-gradient(to left, #e0e7ff, #c7d2fe);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
         }
 
-        .badge {
-            background: rgba(59,130,246,0.2);
+        .key-status {
+            background: rgba(76,175,80,0.2);
             padding: 5px 12px;
             border-radius: 40px;
             font-size: 0.7rem;
-            color: #a5b4fc;
+            color: #81c784;
         }
 
         .messages-area {
@@ -223,7 +197,7 @@
         }
 
         .user-message .avatar {
-            background: linear-gradient(145deg, #3b82f6, #2563eb);
+            background: linear-gradient(145deg, #ea4335, #c5221f);
         }
 
         .bubble {
@@ -236,7 +210,7 @@
         }
 
         .user-message .bubble {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            background: linear-gradient(135deg, #ea4335, #c5221f);
             border-bottom-right-radius: 6px;
         }
 
@@ -284,32 +258,27 @@
         }
 
         .send-btn {
-            background: #3b82f6;
+            background: #ea4335;
             border: none;
             width: 44px;
             height: 44px;
             border-radius: 50%;
             color: white;
             cursor: pointer;
-            transition: 0.2s;
         }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(15px);} to { opacity: 1; transform: translateY(0);} }
         @keyframes wave { 0%,100%{ transform: translateY(0);} 50%{ transform: translateY(-5px);} }
-        @keyframes pulseGlow { 0% { text-shadow: 0 0 0 rgba(59,130,246,0);} 50% { text-shadow: 0 0 8px #3b82f6;} }
 
         @media (max-width: 750px) {
             .sidebar { width: 70px; }
             .sidebar-header h3, .convo-title, .convo-date { display: none; }
-            .convo-item { display: flex; justify-content: center; }
-            .delete-convo { display: none; }
         }
     </style>
 </head>
 <body>
 <div class="app-wrapper">
-    <!-- الشريط الجانبي للمحادثات -->
     <div class="sidebar">
         <div class="sidebar-header">
             <h3><i class="fas fa-history"></i> المحادثات</h3>
@@ -318,22 +287,17 @@
         <div class="conversations-list" id="conversationsList"></div>
     </div>
 
-    <!-- منطقة الدردشة -->
     <div class="chat-container">
         <div class="chat-header">
             <div class="logo-area">
-                <i class="fas fa-brain logo-icon"></i>
-                <h1>ذكي GPT</h1>
-                <div class="badge"><i class="fas fa-database"></i> محلي 100%</div>
+                <i class="fab fa-google logo-icon"></i>
+                <h1>Gemini AI</h1>
             </div>
-            <div class="badge"><i class="fas fa-microchip"></i> DeepSeek API مدمج</div>
-        </div>
-        <div class="messages-area" id="messagesContainer">
-            <div class="message">
-                <div class="avatar"><i class="fas fa-robot"></i></div>
-                <div class="bubble">مرحباً! أنا ذكي GPT مع دعم DeepSeek API وجميع محادثاتك محفوظة بالكامل على هاتفك. يمكنك إنشاء محادثات جديدة وحذف القديمة، وكل شيء يعمل بدون سيرفرات خارجية.</div>
+            <div class="key-status">
+                <i class="fas fa-check-circle"></i> Gemini API | محلي بالكامل
             </div>
         </div>
+        <div class="messages-area" id="messagesContainer"></div>
         <div class="input-area">
             <div class="input-wrapper">
                 <textarea id="userInput" rows="1" placeholder="اكتب رسالتك..."></textarea>
@@ -344,109 +308,133 @@
 </div>
 
 <script>
-    // ================== [1] مفتاح API مدمج (DeepSeek) ==================
-    const DEEPSEEK_API_KEY = "sk-95e3f5b3a3e24a1f8c2d4b6a7e8f9c0d1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d"; 
-    // هذا مفتاح تجريبي للعرض فقط، استخدم مفتاحك الحقيقي من deepseek platform
-
-    // ================== إدارة المحادثات (LocalStorage) ==================
-    let conversations = [];     // { id, title, date, messages: [{role, content}] }
+    // ====================== مفتاح Gemini API مضمن ======================
+    const GEMINI_API_KEY = "AIzaSyDeXn7XfJFLLFTx76NC8apmOhWcFseko_c";
+    
+    // ====================== إدارة المحادثات ======================
+    let conversations = [];
     let currentConversationId = null;
-
-    // تحميل المحادثات من localStorage
-    function loadConversationsFromStorage() {
-        const stored = localStorage.getItem('deepseek_chats');
+    
+    function saveConversations() {
+        localStorage.setItem('gemini_chats_final', JSON.stringify(conversations));
+    }
+    
+    function loadConversations() {
+        const stored = localStorage.getItem('gemini_chats_final');
         if (stored) {
             try {
                 conversations = JSON.parse(stored);
-                if (!Array.isArray(conversations)) conversations = [];
             } catch(e) { conversations = []; }
         }
-        if (conversations.length === 0) {
-            // محادثة ترحيب افتراضية
-            const defaultConv = {
+        if (!conversations.length) {
+            conversations = [{
                 id: Date.now().toString(),
-                title: "محادثة جديدة",
+                title: "المحادثة الأولى",
                 date: new Date().toLocaleString(),
-                messages: [
-                    { role: "assistant", content: "مرحباً! أنا ذكي GPT مع دعم DeepSeek API وجميع محادثاتك محفوظة بالكامل على هاتفك. يمكنك إنشاء محادثات جديدة وحذف القديمة." }
-                ]
-            };
-            conversations.push(defaultConv);
-            saveConversationsToStorage();
+                messages: [{ role: "model", content: "🌟 مرحباً! أنا Gemini من Google.\n\n✅ المفتاح مضمن بالفعل - يعمل مباشرة!\n💾 محادثاتك محفوظة على هاتفك فقط\n🎯 اسألني أي شيء وسأجيبك." }]
+            }];
+            saveConversations();
         }
         currentConversationId = conversations[0].id;
         renderSidebar();
         loadCurrentConversation();
     }
-
-    function saveConversationsToStorage() {
-        localStorage.setItem('deepseek_chats', JSON.stringify(conversations));
-    }
-
-    // عرض قائمة المحادثات في الشريط الجانبي
+    
     function renderSidebar() {
         const listDiv = document.getElementById('conversationsList');
         listDiv.innerHTML = '';
         conversations.forEach(conv => {
-            const convDiv = document.createElement('div');
-            convDiv.className = `convo-item ${currentConversationId === conv.id ? 'active' : ''}`;
-            convDiv.innerHTML = `
-                <div class="convo-title"><i class="fas fa-comment"></i> ${conv.title.length > 25 ? conv.title.slice(0,22)+'...' : conv.title}</div>
-                <div class="convo-date"><span>${new Date(conv.date).toLocaleDateString()}</span>
-                <button class="delete-convo" data-id="${conv.id}"><i class="fas fa-trash-alt"></i></button></div>
+            const div = document.createElement('div');
+            div.className = `convo-item ${currentConversationId === conv.id ? 'active' : ''}`;
+            div.innerHTML = `
+                <div class="convo-title"><i class="fas fa-comment"></i> ${conv.title.substring(0, 25)}</div>
+                <div class="convo-date">
+                    <span>${new Date(conv.date).toLocaleDateString()}</span>
+                    <button class="delete-convo" data-id="${conv.id}"><i class="fas fa-trash-alt"></i></button>
+                </div>
             `;
-            convDiv.addEventListener('click', (e) => {
+            div.addEventListener('click', (e) => {
                 if (e.target.classList.contains('delete-convo') || e.target.closest('.delete-convo')) return;
                 switchConversation(conv.id);
             });
-            const delBtn = convDiv.querySelector('.delete-convo');
+            const delBtn = div.querySelector('.delete-convo');
             if (delBtn) delBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 deleteConversation(conv.id);
             });
-            listDiv.appendChild(convDiv);
+            listDiv.appendChild(div);
         });
     }
-
-    // التبديل بين المحادثات
-    function switchConversation(convId) {
-        const exists = conversations.find(c => c.id === convId);
-        if (exists) {
-            currentConversationId = convId;
-            renderSidebar();
-            loadCurrentConversation();
-        }
+    
+    function switchConversation(id) {
+        currentConversationId = id;
+        renderSidebar();
+        loadCurrentConversation();
     }
-
-    // تحميل المحادثة الحالية في واجهة الدردشة
+    
     function loadCurrentConversation() {
         const conv = conversations.find(c => c.id === currentConversationId);
         if (!conv) return;
         const container = document.getElementById('messagesContainer');
         container.innerHTML = '';
         conv.messages.forEach(msg => {
-            renderMessageToUI(msg.content, msg.role === 'user');
+            renderMessage(msg.content, msg.role === 'user');
         });
         scrollToBottom();
     }
-
-    function renderMessageToUI(content, isUser) {
+    
+    function renderMessage(content, isUser) {
         const container = document.getElementById('messagesContainer');
-        const msgDiv = document.createElement('div');
-        msgDiv.className = `message ${isUser ? 'user-message' : ''}`;
-        msgDiv.innerHTML = `
-            <div class="avatar">${isUser ? '<i class="fas fa-user"></i>' : '<i class="fas fa-robot"></i>'}</div>
+        const div = document.createElement('div');
+        div.className = `message ${isUser ? 'user-message' : ''}`;
+        div.innerHTML = `
+            <div class="avatar">${isUser ? '<i class="fas fa-user"></i>' : '<i class="fab fa-google"></i>'}</div>
             <div class="bubble">${escapeHtml(content).replace(/\n/g, '<br>')}</div>
         `;
-        container.appendChild(msgDiv);
-        scrollToBottom();
+        container.appendChild(div);
     }
-
-    function scrollToBottom() {
-        const container = document.getElementById('messagesContainer');
-        container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+    
+    function addMessageToCurrent(role, content) {
+        const conv = conversations.find(c => c.id === currentConversationId);
+        if (conv) {
+            conv.messages.push({ role, content });
+            conv.date = new Date().toLocaleString();
+            if (role === 'user' && conv.title === "المحادثة الأولى" && content.length > 0) {
+                conv.title = content.length > 20 ? content.substring(0, 18) + '...' : content;
+            }
+            saveConversations();
+            renderSidebar();
+            renderMessage(content, role === 'user');
+            scrollToBottom();
+        }
     }
-
+    
+    function createNewConversation() {
+        const newId = Date.now().toString();
+        conversations.unshift({
+            id: newId,
+            title: "محادثة جديدة",
+            date: new Date().toLocaleString(),
+            messages: [{ role: "model", content: "✨ بدأت محادثة جديدة! اسألني ما شئت." }]
+        });
+        saveConversations();
+        currentConversationId = newId;
+        renderSidebar();
+        loadCurrentConversation();
+    }
+    
+    function deleteConversation(id) {
+        if (conversations.length <= 1) {
+            alert("لا يمكن حذف المحادثة الوحيدة");
+            return;
+        }
+        conversations = conversations.filter(c => c.id !== id);
+        if (currentConversationId === id) currentConversationId = conversations[0].id;
+        saveConversations();
+        renderSidebar();
+        loadCurrentConversation();
+    }
+    
     function escapeHtml(str) {
         return str.replace(/[&<>]/g, function(m) {
             if (m === '&') return '&amp;';
@@ -455,155 +443,109 @@
             return m;
         });
     }
-
-    // إنشاء محادثة جديدة
-    function createNewConversation() {
-        const newId = Date.now().toString();
-        const newConv = {
-            id: newId,
-            title: "محادثة جديدة",
-            date: new Date().toLocaleString(),
-            messages: [
-                { role: "assistant", content: "بدأت محادثة جديدة! اسألني أي شيء 💬" }
-            ]
-        };
-        conversations.unshift(newConv);
-        saveConversationsToStorage();
-        currentConversationId = newId;
-        renderSidebar();
-        loadCurrentConversation();
+    
+    function scrollToBottom() {
+        const container = document.getElementById('messagesContainer');
+        container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
     }
-
-    // حذف محادثة
-    function deleteConversation(convId) {
-        if (conversations.length === 1) {
-            alert("لا يمكن حذف المحادثة الوحيدة، يمكنك إنشاء واحدة جديدة بدلاً من ذلك.");
-            return;
-        }
-        conversations = conversations.filter(c => c.id !== convId);
-        if (currentConversationId === convId) {
-            currentConversationId = conversations[0].id;
-        }
-        saveConversationsToStorage();
-        renderSidebar();
-        loadCurrentConversation();
-    }
-
-    // تحديث عنوان المحادثة بناءً على أول رسالة للمستخدم
-    function updateConversationTitle(convId, userMessage) {
-        const conv = conversations.find(c => c.id === convId);
-        if (conv && conv.title === "محادثة جديدة" && userMessage) {
-            let newTitle = userMessage.length > 30 ? userMessage.slice(0, 28) + "..." : userMessage;
-            conv.title = newTitle;
-            conv.date = new Date().toLocaleString();
-            saveConversationsToStorage();
-            renderSidebar();
-        }
-    }
-
-    // إضافة رسالة للمحادثة الحالية
-    function addMessageToCurrentConversation(role, content) {
-        const conv = conversations.find(c => c.id === currentConversationId);
-        if (conv) {
-            conv.messages.push({ role, content });
-            conv.date = new Date().toLocaleString();
-            saveConversationsToStorage();
-            renderSidebar(); // لتحديث التاريخ
-            renderMessageToUI(content, role === 'user');
-        }
-    }
-
-    // ================== DeepSeek API الاتصال ==================
+    
+    // ====================== الاتصال بـ Gemini API ======================
     let isLoading = false;
-
-    async function callDeepSeek(messagesHistory) {
-        const requestBody = {
-            model: "deepseek-chat",
-            messages: messagesHistory,
-            temperature: 0.7,
-            max_tokens: 700
-        };
-        const response = await fetch("https://api.deepseek.com/v1/chat/completions", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${DEEPSEEK_API_KEY}`
-            },
-            body: JSON.stringify(requestBody)
-        });
-        if (!response.ok) {
-            let errMsg = `HTTP ${response.status}`;
-            try { const data = await response.json(); errMsg = data.error?.message || errMsg; } catch(e) {}
-            throw new Error(`DeepSeek API خطأ: ${errMsg}`);
-        }
-        const data = await response.json();
-        return data.choices[0].message.content;
-    }
-
-    // عرض مؤشر الكتابة
+    
     function showTyping() {
         const container = document.getElementById('messagesContainer');
         const typingDiv = document.createElement('div');
         typingDiv.id = 'typingIndicator';
         typingDiv.className = 'message';
-        typingDiv.innerHTML = `<div class="avatar"><i class="fas fa-robot"></i></div><div class="typing-indicator"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span><span style="margin-right:6px;">يكتب...</span></div>`;
+        typingDiv.innerHTML = `<div class="avatar"><i class="fab fa-google"></i></div><div class="typing-indicator"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span><span style="margin-right:6px;">Gemini يكتب...</span></div>`;
         container.appendChild(typingDiv);
         scrollToBottom();
     }
+    
     function hideTyping() {
         const el = document.getElementById('typingIndicator');
-        if(el) el.remove();
+        if (el) el.remove();
     }
-
+    
+    async function sendToGemini(messages) {
+        const geminiMessages = [];
+        for (const msg of messages) {
+            geminiMessages.push({
+                role: msg.role === 'user' ? 'user' : 'model',
+                parts: [{ text: msg.content }]
+            });
+        }
+        
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+        
+        const response = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                contents: geminiMessages,
+                generationConfig: {
+                    temperature: 0.7,
+                    maxOutputTokens: 800
+                }
+            })
+        });
+        
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error?.message || `خطأ ${response.status}`);
+        }
+        
+        const data = await response.json();
+        const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (!reply) throw new Error("لم يتم الحصول على رد");
+        return reply;
+    }
+    
     async function sendMessage() {
         if (isLoading) return;
-        const inputEl = document.getElementById('userInput');
-        const userText = inputEl.value.trim();
-        if (!userText) return;
-        inputEl.value = '';
-        inputEl.style.height = 'auto';
         
-        // إضافة رسالة المستخدم للـ UI وللتخزين
-        addMessageToCurrentConversation('user', userText);
-        updateConversationTitle(currentConversationId, userText);
+        const input = document.getElementById('userInput');
+        const text = input.value.trim();
+        if (!text) return;
+        input.value = '';
         
-        // تحضير السياق للمحادثة الحالية (آخر 12 رسالة)
-        const currentConv = conversations.find(c => c.id === currentConversationId);
-        const contextMessages = currentConv.messages.slice(-12).map(msg => ({ role: msg.role, content: msg.content }));
+        addMessageToCurrent('user', text);
+        
+        const conv = conversations.find(c => c.id === currentConversationId);
+        const context = conv.messages.slice(-12).map(m => ({ role: m.role, content: m.content }));
         
         isLoading = true;
         showTyping();
+        
         try {
-            const assistantReply = await callDeepSeek(contextMessages);
+            const reply = await sendToGemini(context);
             hideTyping();
-            addMessageToCurrentConversation('assistant', assistantReply);
+            addMessageToCurrent('model', reply);
         } catch (error) {
             hideTyping();
-            console.error(error);
-            const errorText = `⚠️ حدث خطأ: ${error.message}. تأكد من مفتاح API أو اتصال الإنترنت.`;
-            addMessageToCurrentConversation('assistant', errorText);
+            addMessageToCurrent('model', `⚠️ خطأ: ${error.message}\n\nتأكد من اتصالك بالإنترنت ومفتاح API صحيح.`);
         } finally {
             isLoading = false;
         }
     }
-
-    // الأحداث
+    
+    // ====================== أحداث ======================
     document.getElementById('sendBtn').addEventListener('click', sendMessage);
     document.getElementById('newChatBtn').addEventListener('click', createNewConversation);
-    const userInputArea = document.getElementById('userInput');
-    userInputArea.addEventListener('keydown', (e) => {
+    
+    const textarea = document.getElementById('userInput');
+    textarea.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
             sendMessage();
         }
     });
-    userInputArea.addEventListener('input', function() {
+    textarea.addEventListener('input', function() {
         this.style.height = 'auto';
         this.style.height = Math.min(this.scrollHeight, 120) + 'px';
     });
-
-    // بدء التطبيق
-    loadConversationsFromStorage();
+    
+    loadConversations();
 </script>
 </body>
 </html>
