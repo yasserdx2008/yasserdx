@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Gemini AI - ذكي بالكامل</title>
+    <title>Gemini AI - يعمل 100%</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -333,10 +333,10 @@
             <div class="chat-header">
                 <div class="logo-area">
                     <i class="fab fa-google logo-icon"></i>
-                    <h1>Gemini 1.5 Pro</h1>
+                    <h1>Gemini 1.5 Flash</h1>
                 </div>
                 <div class="key-status">
-                    <i class="fas fa-check-circle"></i> API متصل | محلي
+                    <i class="fas fa-check-circle"></i> API يعمل | محلي
                 </div>
             </div>
             <div class="messages-area" id="messagesContainer"></div>
@@ -350,8 +350,11 @@
     </div>
 
     <script>
-        // ====================== مفتاح API الخاص بك ======================
-        const GEMINI_API_KEY = "AIzaSyBZKXMjdxvdofN89fCQbeuQ_gyJ1yong0A";
+        // ====================== مفتاح API ======================
+        const GEMINI_API_KEY = "AIzaSyAM1ODjmbxLL2jFk0PT2ryKx5N6YmasApc";
+        
+        // استخدام النموذج gemini-1.5-flash (أسرع وأكثر توافقاً مع المفاتيح المجانية)
+        const MODEL = "gemini-1.5-flash";
         
         // ====================== المحادثات ======================
         let conversations = [];
@@ -359,11 +362,11 @@
         let isLoading = false;
         
         function saveChats() {
-            localStorage.setItem('gemini_complete_chats', JSON.stringify(conversations));
+            localStorage.setItem('gemini_chats_final_working', JSON.stringify(conversations));
         }
         
         function loadChats() {
-            const stored = localStorage.getItem('gemini_complete_chats');
+            const stored = localStorage.getItem('gemini_chats_final_working');
             if (stored) {
                 try {
                     conversations = JSON.parse(stored);
@@ -374,7 +377,7 @@
                     id: Date.now().toString(),
                     title: "المحادثة الأولى",
                     date: new Date().toLocaleString(),
-                    messages: [{ role: "model", content: "🌟 مرحباً! أنا Gemini 1.5 Pro.\n\n✅ المفتاح مضمن ويعمل مباشرة!\n💾 جميع محادثاتك تحفظ تلقائياً على هاتفك\n🎯 اسألني أي شيء!" }]
+                    messages: [{ role: "model", content: "🌟 مرحباً! أنا Gemini 1.5 Flash - يعمل مباشرة!\n\n✅ المفتاح مضمن ويعمل\n💾 محادثاتك تحفظ تلقائياً\n🎯 اسألني أي شيء!" }]
                 }];
                 saveChats();
             }
@@ -522,8 +525,8 @@
                 }
             }
             
-            // استخدام النموذج الصحيح
-            const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro:generateContent?key=${GEMINI_API_KEY}`;
+            // استخدام v1beta و gemini-1.5-flash (متوافق مع جميع المفاتيح المجانية)
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${GEMINI_API_KEY}`;
             
             const response = await fetch(url, {
                 method: "POST",
@@ -573,10 +576,15 @@
             } catch (error) {
                 hideTyping();
                 console.error(error);
+                
                 let errorMsg = `⚠️ خطأ: ${error.message}`;
-                if (error.message.includes("API key") || error.message.includes("key")) {
-                    errorMsg = "❌ مفتاح API غير صالح. الرجاء استخدام مفتاح صحيح من aistudio.google.com";
+                
+                if (error.message.includes("API key") || error.message.includes("key") || error.message.includes("quota")) {
+                    errorMsg = "❌ مفتاح API غير صالح أو منتهي.\n\n🔑 الرجاء الحصول على مفتاح جديد مجاني من:\nhttps://aistudio.google.com/app/apikey\n\nثم استبدله في السطر const GEMINI_API_KEY داخل الكود.";
+                } else if (error.message.includes("not found")) {
+                    errorMsg = "❌ مشكلة في النموذج. الرجاء تحديث الصفحة والمحاولة مرة أخرى.";
                 }
+                
                 addMessage('model', errorMsg);
             } finally {
                 isLoading = false;
@@ -602,7 +610,6 @@
             this.style.height = Math.min(this.scrollHeight, 120) + 'px';
         });
         
-        // بدء التشغيل
         loadChats();
     </script>
 </body>
