@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>AI Chat - يعمل فوراً | ذكي حقيقي</title>
+    <title>Groq AI - سريع جداً | يعمل فوراً</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -44,7 +44,7 @@
         }
 
         .sidebar-header h2 {
-            color: #ea4335;
+            color: #f59e0b;
             font-size: 1.2rem;
             display: flex;
             align-items: center;
@@ -52,7 +52,7 @@
         }
 
         .new-chat-btn {
-            background: #ea4335;
+            background: #f59e0b;
             border: none;
             color: white;
             padding: 12px;
@@ -85,12 +85,12 @@
         }
 
         .convo-item:hover {
-            background: rgba(234,67,53,0.2);
+            background: rgba(245,158,11,0.2);
         }
 
         .convo-item.active {
-            background: linear-gradient(95deg, #2a1e3a, #1a0f2a);
-            border-right: 3px solid #ea4335;
+            background: linear-gradient(95deg, #3a2a1a, #1a150a);
+            border-right: 3px solid #f59e0b;
         }
 
         .convo-title {
@@ -140,10 +140,7 @@
 
         .logo-icon {
             font-size: 1.8rem;
-            background: linear-gradient(135deg, #ea4335, #fbbc04);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+            color: #f59e0b;
         }
 
         h1 {
@@ -192,7 +189,7 @@
         }
 
         .user-message .avatar {
-            background: linear-gradient(145deg, #ea4335, #c5221f);
+            background: linear-gradient(145deg, #f59e0b, #d97706);
         }
 
         .bubble {
@@ -205,7 +202,7 @@
         }
 
         .user-message .bubble {
-            background: linear-gradient(135deg, #ea4335, #c5221f);
+            background: linear-gradient(135deg, #f59e0b, #d97706);
             border-bottom-right-radius: 6px;
             border-bottom-left-radius: 20px;
         }
@@ -255,7 +252,7 @@
         }
 
         .send-btn {
-            background: #ea4335;
+            background: #f59e0b;
             border: none;
             width: 48px;
             height: 48px;
@@ -270,7 +267,7 @@
             position: fixed;
             top: 15px;
             right: 15px;
-            background: #ea4335;
+            background: #f59e0b;
             border: none;
             color: white;
             width: 45px;
@@ -323,7 +320,7 @@
     <div class="fullscreen-chat">
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <h2><i class="fas fa-brain"></i> AI Chat Pro</h2>
+                <h2><i class="fas fa-bolt"></i> Groq AI</h2>
                 <button class="new-chat-btn" id="newChatBtn"><i class="fas fa-plus"></i> محادثة جديدة</button>
             </div>
             <div class="conversations-list" id="conversationsList"></div>
@@ -332,14 +329,19 @@
         <div class="chat-main">
             <div class="chat-header">
                 <div class="logo-area">
-                    <i class="fas fa-brain logo-icon"></i>
-                    <h1>AI Chat - ذكي حقيقي</h1>
+                    <i class="fas fa-bolt logo-icon"></i>
+                    <h1>Groq AI - Llama 3</h1>
                 </div>
                 <div class="key-status">
-                    <i class="fas fa-check-circle"></i> AI يعمل | مجاني
+                    <i class="fas fa-check-circle"></i> API متصل | سريع جداً
                 </div>
             </div>
-            <div class="messages-area" id="messagesContainer"></div>
+            <div class="messages-area" id="messagesContainer">
+                <div class="message">
+                    <div class="avatar"><i class="fas fa-bolt"></i></div>
+                    <div class="bubble">🌟 مرحباً! أنا Groq AI يعمل بـ Llama 3<br><br>✅ المفتاح مضمن ويعمل مباشرة<br>⚡ سرعة فائقة في الردود<br>💾 محادثاتك تحفظ تلقائياً<br>🎯 اسألني أي شيء!</div>
+                </div>
+            </div>
             <div class="input-area">
                 <div class="input-wrapper">
                     <textarea id="userInput" rows="1" placeholder="اكتب رسالتك..."></textarea>
@@ -350,20 +352,20 @@
     </div>
 
     <script>
-        // ====================== استخدام AI مجاني حقيقي ======================
-        // استخدام OpenRouter API مع مفتاح تجريبي مجاني
-        const FREE_API_KEY = "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";
+        // ====================== مفتاح Groq API مضمن ======================
+        const GROQ_API_KEY = "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";
         
+        // ====================== المحادثات ======================
         let conversations = [];
         let currentId = null;
         let isLoading = false;
         
         function saveChats() {
-            localStorage.setItem('real_ai_chats', JSON.stringify(conversations));
+            localStorage.setItem('groq_chats_final', JSON.stringify(conversations));
         }
         
         function loadChats() {
-            const stored = localStorage.getItem('real_ai_chats');
+            const stored = localStorage.getItem('groq_chats_final');
             if (stored) {
                 try {
                     conversations = JSON.parse(stored);
@@ -374,7 +376,7 @@
                     id: Date.now().toString(),
                     title: "المحادثة الأولى",
                     date: new Date().toLocaleString(),
-                    messages: [{ role: "assistant", content: "🌟 مرحباً! أنا AI ذكي حقيقي!\n\n✅ يعمل مباشرة بدون مشاكل\n💾 محادثاتك تحفظ تلقائياً\n🎯 اسألني أي شيء - سأجيبك بذكاء!" }]
+                    messages: [{ role: "assistant", content: "🌟 مرحباً! أنا Groq AI - سريع جداً!\n\n✅ المفتاح مضمن ويعمل مباشرة\n⚡ سرعة فائقة في الردود\n💾 محادثاتك تحفظ تلقائياً\n🎯 اسألني أي شيء!" }]
                 }];
                 saveChats();
             }
@@ -434,7 +436,7 @@
             const div = document.createElement('div');
             div.className = `message ${isUser ? 'user-message' : ''}`;
             div.innerHTML = `
-                <div class="avatar">${isUser ? '<i class="fas fa-user"></i>' : '<i class="fas fa-robot"></i>'}</div>
+                <div class="avatar">${isUser ? '<i class="fas fa-user"></i>' : '<i class="fas fa-bolt"></i>'}</div>
                 <div class="bubble">${escapeHtml(content).replace(/\n/g, '<br>')}</div>
             `;
             container.appendChild(div);
@@ -461,7 +463,7 @@
                 id: newId,
                 title: "محادثة جديدة",
                 date: new Date().toLocaleString(),
-                messages: [{ role: "assistant", content: "✨ محادثة جديدة! اسألني ما شئت." }]
+                messages: [{ role: "assistant", content: "✨ محادثة جديدة! اسألني ما شئت - سأجيبك بسرعة البرق ⚡" }]
             });
             saveChats();
             currentId = newId;
@@ -495,13 +497,13 @@
             container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
         }
         
-        // ====================== AI API حقيقي (مجاني) ======================
+        // ====================== الاتصال بـ Groq API ======================
         function showTyping() {
             const container = document.getElementById('messagesContainer');
             const typingDiv = document.createElement('div');
             typingDiv.id = 'typingIndicator';
             typingDiv.className = 'message';
-            typingDiv.innerHTML = `<div class="avatar"><i class="fas fa-robot"></i></div><div class="typing-indicator"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span><span style="margin-right:6px;">AI يفكر...</span></div>`;
+            typingDiv.innerHTML = `<div class="avatar"><i class="fas fa-bolt"></i></div><div class="typing-indicator"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span><span style="margin-right:6px;">Groq يكتب بسرعة...</span></div>`;
             container.appendChild(typingDiv);
             scrollToBottom();
         }
@@ -511,21 +513,15 @@
             if (el) el.remove();
         }
         
-        async function callAI(messages) {
-            // استخدام خدمة مجانية (يمكن استبدالها بأي API)
-            // هذه خدمة مجانية لـ AI بدون مفتاح
-            const url = "https://openrouter.ai/api/v1/chat/completions";
-            
-            const response = await fetch(url, {
+        async function callGroq(messages) {
+            const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${FREE_API_KEY}`,
-                    "HTTP-Referer": window.location.href,
-                    "X-Title": "AI Chat App"
+                    "Authorization": `Bearer ${GROQ_API_KEY}`
                 },
                 body: JSON.stringify({
-                    model: "mistralai/mistral-7b-instruct:free",
+                    model: "llama-3.3-70b-versatile",
                     messages: messages,
                     temperature: 0.7,
                     max_tokens: 800
@@ -559,14 +555,13 @@
             showTyping();
             
             try {
-                const reply = await callAI(context);
+                const reply = await callGroq(context);
                 hideTyping();
                 addMessage('assistant', reply);
             } catch (error) {
                 hideTyping();
                 console.error(error);
-                let errorMsg = `⚠️ خطأ: ${error.message}\n\nجاري المحاولة مرة أخرى...`;
-                addMessage('assistant', errorMsg);
+                addMessage('assistant', `⚠️ خطأ: ${error.message}\n\nالرجاء المحاولة مرة أخرى.`);
             } finally {
                 isLoading = false;
             }
