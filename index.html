@@ -142,7 +142,7 @@
             flex-direction: column;
             align-items: center;
             margin: 24px 0 20px;
-            padding: 16px;
+            padding: 20px;
             background: rgba(255, 255, 255, 0.03);
             border-radius: 24px;
             border: 1px dashed rgba(255, 255, 255, 0.06);
@@ -169,7 +169,15 @@
             box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
             max-width: 100%;
             height: auto;
+            width: auto !important;
+            max-height: 300px;
             image-rendering: auto;
+        }
+
+        @media (max-width: 480px) {
+            #qrcode canvas {
+                max-height: 220px;
+            }
         }
 
         #qrcode img {
@@ -198,7 +206,7 @@
             background: rgba(255, 255, 255, 0.04);
             padding: 10px 14px;
             border-radius: 14px;
-            margin-top: 10px;
+            margin-top: 12px;
             width: 100%;
             text-align: center;
             color: rgba(255, 255, 255, 0.5);
@@ -214,6 +222,19 @@
 
         .link-preview span {
             color: #ffd200;
+            font-weight: 500;
+        }
+
+        .quality-badge {
+            display: inline-block;
+            background: rgba(255, 210, 0, 0.08);
+            border: 1px solid rgba(255, 210, 0, 0.12);
+            border-radius: 20px;
+            padding: 3px 14px;
+            font-size: 10px;
+            color: #ffd200;
+            margin-top: 8px;
+            letter-spacing: 0.5px;
             font-weight: 500;
         }
 
@@ -253,12 +274,6 @@
             background: linear-gradient(135deg, #f7971e, #ffd200);
             color: #1a1a2e;
             border: none;
-        }
-
-        .actions .btn-svg {
-            background: rgba(100, 200, 255, 0.1);
-            border-color: rgba(100, 200, 255, 0.12);
-            color: #8ac4ff;
         }
 
         .actions .btn-share {
@@ -388,18 +403,6 @@
             border-color: rgba(255, 80, 80, 0.25);
         }
 
-        .quality-badge {
-            display: inline-block;
-            background: rgba(255, 210, 0, 0.1);
-            border: 1px solid rgba(255, 210, 0, 0.15);
-            border-radius: 20px;
-            padding: 2px 12px;
-            font-size: 10px;
-            color: #ffd200;
-            margin-top: 6px;
-            letter-spacing: 0.5px;
-        }
-
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -452,9 +455,6 @@
                 padding: 12px;
                 min-height: 160px;
             }
-            #qrcode canvas {
-                max-width: 180px;
-            }
         }
 
         @media (min-width: 768px) {
@@ -503,9 +503,6 @@
             <button class="btn-hd" id="downloadHDPngBtn">
                 <i class="fas fa-image"></i> HD
             </button>
-            <button class="btn-svg" id="downloadSvgBtn">
-                <i class="fas fa-vector-square"></i> SVG
-            </button>
             <button id="shareBtn" class="btn-share">
                 <i class="fas fa-share-alt"></i> مشاركة
             </button>
@@ -545,7 +542,6 @@
             const linkText = document.getElementById('linkText');
             const downloadPngBtn = document.getElementById('downloadPngBtn');
             const downloadHDPngBtn = document.getElementById('downloadHDPngBtn');
-            const downloadSvgBtn = document.getElementById('downloadSvgBtn');
             const shareBtn = document.getElementById('shareBtn');
             const copyBtn = document.getElementById('copyBtn');
             const clearBtn = document.getElementById('clearBtn');
@@ -556,12 +552,10 @@
 
             let currentUrl = '';
             let currentCanvas = null;
-            let currentQrText = '';
             let history = [];
 
-            // ===== إعدادات الجودة العالية =====
-            const QR_SIZE = 1024; // دقة عالية جداً
-            const DISPLAY_SIZE = 280; // حجم العرض في الواجهة
+            // ===== إعدادات الجودة =====
+            const QR_SIZE = 1024;
 
             // ===== IndexedDB =====
             const DB_NAME = 'DX_QR_History';
@@ -732,7 +726,7 @@
                 showToast('🗑️ تم مسح السجل', 'success');
             }
 
-            // ===== إنشاء QR بجودة عالية =====
+            // ===== إنشاء QR =====
             function generateQR(url) {
                 if (!url || url.trim() === '') {
                     showToast('⚠️ الرجاء إدخال رابط', 'error');
@@ -745,14 +739,11 @@
                 }
 
                 currentUrl = finalUrl;
-                currentQrText = finalUrl;
 
-                // مسح المحتوى السابق
                 qrContainer.innerHTML = '';
                 qrDisplay.classList.add('has-qr');
 
-                // إنشاء QR بدقة عالية جداً
-                const qrCode = new QRCode(qrContainer, {
+                new QRCode(qrContainer, {
                     text: finalUrl,
                     width: QR_SIZE,
                     height: QR_SIZE,
@@ -761,18 +752,14 @@
                     correctLevel: QRCode.CorrectLevel.H
                 });
 
-                // عرض الرابط
                 linkText.textContent = finalUrl;
                 linkPreview.classList.add('show');
 
-                // حفظ Canvas بعد اكتمال الرسم
                 setTimeout(() => {
                     const canvas = qrContainer.querySelector('canvas');
                     if (canvas) {
-                        // تحسين جودة الصورة
-                        canvas.style.width = DISPLAY_SIZE + 'px';
-                        canvas.style.height = DISPLAY_SIZE + 'px';
-                        canvas.style.imageRendering = 'auto';
+                        canvas.style.maxWidth = '100%';
+                        canvas.style.height = 'auto';
                         currentCanvas = canvas;
                         qualityBadge.textContent = '🔹 جودة عالية ' + QR_SIZE + '×' + QR_SIZE;
                     }
@@ -782,7 +769,7 @@
                 showToast('✅ تم إنشاء QR عالي الجودة', 'success');
             }
 
-            // ===== تحميل PNG عالي الجودة =====
+            // ===== تحميل HD (1024×1024) =====
             function downloadHD() {
                 let canvas = qrContainer.querySelector('canvas');
                 if (!canvas) {
@@ -801,15 +788,14 @@
 
             function performDownloadHD(canvas) {
                 try {
-                    // نستخدم toBlob مع جودة عالية
                     if (canvas.toBlob) {
                         canvas.toBlob(function(blob) {
                             if (!blob) {
-                                fallbackDownloadHD(canvas);
+                                fallbackDownload(canvas, 'HD');
                                 return;
                             }
                             const link = document.createElement('a');
-                            link.download = `DX_QR_${Date.now()}.png`;
+                            link.download = `DX_QR_HD_${Date.now()}.png`;
                             link.href = URL.createObjectURL(blob);
                             document.body.appendChild(link);
                             link.click();
@@ -817,37 +803,17 @@
                                 document.body.removeChild(link);
                                 URL.revokeObjectURL(link.href);
                             }, 100);
-                            showToast('✅ تم تحميل PNG عالي الجودة', 'success');
+                            showToast('✅ تم تحميل HD', 'success');
                         }, 'image/png', 1.0);
                     } else {
-                        fallbackDownloadHD(canvas);
+                        fallbackDownload(canvas, 'HD');
                     }
                 } catch (error) {
-                    fallbackDownloadHD(canvas);
+                    fallbackDownload(canvas, 'HD');
                 }
             }
 
-            function fallbackDownloadHD(canvas) {
-                try {
-                    const dataUrl = canvas.toDataURL('image/png');
-                    const link = document.createElement('a');
-                    link.download = `DX_QR_${Date.now()}.png`;
-                    link.href = dataUrl;
-                    link.style.display = 'none';
-                    document.body.appendChild(link);
-                    setTimeout(() => {
-                        link.click();
-                        setTimeout(() => {
-                            document.body.removeChild(link);
-                        }, 200);
-                    }, 50);
-                    showToast('✅ تم تحميل PNG عالي الجودة', 'success');
-                } catch (error) {
-                    showToast('⚠️ فشل التحميل، حاول مرة أخرى', 'error');
-                }
-            }
-
-            // ===== تحميل PNG عادي (بحجم العرض) =====
+            // ===== تحميل PNG عادي =====
             function downloadPNG() {
                 let canvas = qrContainer.querySelector('canvas');
                 if (!canvas) {
@@ -866,7 +832,6 @@
 
             function performDownloadPNG(canvas) {
                 try {
-                    // ننشئ Canvas جديد بحجم أصغر للتحميل السريع
                     const tempCanvas = document.createElement('canvas');
                     const size = 512;
                     tempCanvas.width = size;
@@ -878,14 +843,7 @@
 
                     tempCanvas.toBlob(function(blob) {
                         if (!blob) {
-                            const dataUrl = tempCanvas.toDataURL('image/png');
-                            const link = document.createElement('a');
-                            link.download = `DX_QR_${Date.now()}.png`;
-                            link.href = dataUrl;
-                            document.body.appendChild(link);
-                            link.click();
-                            setTimeout(() => document.body.removeChild(link), 100);
-                            showToast('✅ تم تحميل PNG', 'success');
+                            fallbackDownload(tempCanvas, 'PNG');
                             return;
                         }
                         const link = document.createElement('a');
@@ -900,83 +858,28 @@
                         showToast('✅ تم تحميل PNG', 'success');
                     }, 'image/png', 1.0);
                 } catch (error) {
-                    showToast('⚠️ فشل التحميل', 'error');
+                    fallbackDownload(canvas, 'PNG');
                 }
             }
 
-            // ===== تحميل SVG =====
-            function downloadSVG() {
-                let canvas = qrContainer.querySelector('canvas');
-                if (!canvas) {
-                    setTimeout(() => {
-                        canvas = qrContainer.querySelector('canvas');
-                        if (canvas) {
-                            performDownloadSVG(canvas);
-                        } else {
-                            showToast('⚠️ انتظر حتى يظهر الـ QR', 'error');
-                        }
-                    }, 300);
-                    return;
-                }
-                performDownloadSVG(canvas);
-            }
-
-            function performDownloadSVG(canvas) {
+            // ===== طريقة احتياطية للتحميل =====
+            function fallbackDownload(canvas, type) {
                 try {
-                    const ctx = canvas.getContext('2d');
-                    const width = canvas.width;
-                    const height = canvas.height;
-                    const imageData = ctx.getImageData(0, 0, width, height);
-                    const data = imageData.data;
-
-                    let svg =
-                        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}">`;
-                    svg += `<rect width="100%" height="100%" fill="transparent"/>`;
-
-                    let moduleSize = 2;
-                    for (let y = 0; y < height; y += 8) {
-                        for (let x = 0; x < width; x += 8) {
-                            const idx = (y * width + x) * 4;
-                            if (data[idx] < 128 && data[idx + 1] < 128 && data[idx + 2] < 128) {
-                                let size = 1;
-                                while (x + size < width) {
-                                    const idx2 = (y * width + x + size) * 4;
-                                    if (data[idx2] < 128 && data[idx2 + 1] < 128 && data[idx2 + 2] < 128) size++;
-                                    else break;
-                                }
-                                if (size > 0) {
-                                    moduleSize = size;
-                                    break;
-                                }
-                            }
-                        }
-                        if (moduleSize > 1) break;
-                    }
-
-                    const step = Math.max(moduleSize, 2);
-                    for (let y = 0; y < height; y += step) {
-                        for (let x = 0; x < width; x += step) {
-                            const idx = (y * width + x) * 4;
-                            if (data[idx] < 128 && data[idx + 1] < 128 && data[idx + 2] < 128) {
-                                svg += `<rect x="${x}" y="${y}" width="${step}" height="${step}" fill="#ffffff"/>`;
-                            }
-                        }
-                    }
-                    svg += `</svg>`;
-
-                    const blob = new Blob([svg], { type: 'image/svg+xml' });
+                    const dataUrl = canvas.toDataURL('image/png');
                     const link = document.createElement('a');
-                    link.download = `DX_QR_${Date.now()}.svg`;
-                    link.href = URL.createObjectURL(blob);
+                    link.download = `DX_QR_${type}_${Date.now()}.png`;
+                    link.href = dataUrl;
+                    link.style.display = 'none';
                     document.body.appendChild(link);
-                    link.click();
                     setTimeout(() => {
-                        document.body.removeChild(link);
-                        URL.revokeObjectURL(link.href);
-                    }, 100);
-                    showToast('✅ تم تحميل SVG', 'success');
+                        link.click();
+                        setTimeout(() => {
+                            document.body.removeChild(link);
+                        }, 200);
+                    }, 50);
+                    showToast(`✅ تم تحميل ${type}`, 'success');
                 } catch (error) {
-                    showToast('⚠️ فشل تحميل SVG', 'error');
+                    showToast('⚠️ فشل التحميل', 'error');
                 }
             }
 
@@ -1086,7 +989,6 @@
 
             downloadPngBtn.addEventListener('click', downloadPNG);
             downloadHDPngBtn.addEventListener('click', downloadHD);
-            downloadSvgBtn.addEventListener('click', downloadSVG);
             shareBtn.addEventListener('click', shareQR);
             copyBtn.addEventListener('click', copyLink);
             clearBtn.addEventListener('click', clearAll);
@@ -1111,7 +1013,7 @@
                 }, 400);
             }
 
-            console.log('✅ DX - عالي الجودة جاهز للنشر!');
+            console.log('✅ DX - النسخة النهائية جاهزة!');
         })();
     </script>
 
