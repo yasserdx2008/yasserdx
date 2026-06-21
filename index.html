@@ -4,15 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dx Station – محمل وسائط حقيقي</title>
-    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <style>
-        /* ===== RESET & BASE ===== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: 'Segoe UI', system-ui, sans-serif;
         }
 
         body {
@@ -32,8 +30,7 @@
             background: 
                 radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,0.15), transparent),
                 radial-gradient(2px 2px at 40% 70%, rgba(255,255,255,0.1), transparent),
-                radial-gradient(2px 2px at 80% 20%, rgba(255,255,255,0.2), transparent),
-                radial-gradient(2px 2px at 10% 90%, rgba(255,255,255,0.08), transparent);
+                radial-gradient(2px 2px at 80% 20%, rgba(255,255,255,0.2), transparent);
             background-size: 200% 200%;
             animation: starDrift 30s linear infinite alternate;
             pointer-events: none;
@@ -45,7 +42,6 @@
             100% { background-position: 100% 100%; }
         }
 
-        /* ===== CARD ===== */
         .dx-card {
             position: relative;
             z-index: 10;
@@ -53,11 +49,10 @@
             width: 100%;
             background: rgba(18, 22, 40, 0.65);
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 3.5rem 3.5rem 2.5rem 2.5rem;
+            border-radius: 3.5rem;
             padding: 2.8rem 2.2rem;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(120,80,255,0.15) inset;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.7);
             animation: floatIn 0.7s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
@@ -66,7 +61,6 @@
             100% { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        /* ===== HEADER ===== */
         .brand {
             display: flex;
             align-items: center;
@@ -80,7 +74,6 @@
             background: linear-gradient(135deg, #f093fb, #f5576c, #4facfe);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 12px rgba(245,87,108,0.4));
             animation: pulseGlow 2.8s infinite alternate;
         }
 
@@ -115,7 +108,6 @@
             padding-bottom: 0.9rem;
         }
 
-        /* ===== FIELDS ===== */
         .field-group {
             margin-bottom: 1.5rem;
         }
@@ -160,7 +152,6 @@
 
         .url-input-wrapper input::placeholder {
             color: rgba(200,195,230,0.35);
-            font-weight: 300;
         }
 
         .url-input-wrapper .icon-btn {
@@ -176,7 +167,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
         }
 
         .url-input-wrapper .icon-btn:hover {
@@ -185,7 +175,6 @@
             transform: scale(1.02);
         }
 
-        /* ===== ROW DUO ===== */
         .row-duo {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -238,7 +227,6 @@
             color: #5b4b8a;
         }
 
-        /* ===== TOGGLE MP3 / MP4 ===== */
         .toggle-group {
             display: flex;
             gap: 0.8rem;
@@ -278,7 +266,6 @@
             transform: scale(1.02);
         }
 
-        /* ===== BUTTON ===== */
         .btn-download {
             width: 100%;
             background: linear-gradient(135deg, #6c4fcd, #9f6ef0, #f093fb);
@@ -311,7 +298,6 @@
 
         .btn-download:active { transform: scale(0.96); }
 
-        /* ===== RESULT AREA ===== */
         .result-area {
             margin-top: 1.8rem;
             padding: 1rem;
@@ -357,15 +343,6 @@
         .result-area .info small {
             color: #9588b8;
             font-size: 0.8rem;
-        }
-
-        .result-area .badge {
-            background: #2a2348;
-            padding: 0.25rem 1rem;
-            border-radius: 60px;
-            font-size: 0.75rem;
-            color: #b7a5f0;
-            border: 1px solid #3d3260;
         }
 
         .error-msg {
@@ -415,11 +392,14 @@
         }
 
         .legal-note i { margin-left: 0.3rem; color: #4d3f7a; }
+        
+        .success {
+            color: #5fdf8f;
+        }
     </style>
 </head>
 <body>
     <div class="dx-card">
-        <!-- HEADER -->
         <div class="brand">
             <i class="fas fa-bolt"></i>
             <h1>Dx <span>Station</span></h1>
@@ -430,7 +410,6 @@
             ألصق الرابط، اختر المنصة، وحدد الجودة
         </div>
 
-        <!-- URL INPUT -->
         <div class="field-group">
             <div class="field-label">
                 <i class="fas fa-paste"></i> رابط الفيديو
@@ -441,7 +420,6 @@
             </div>
         </div>
 
-        <!-- PLATFORM + QUALITY -->
         <div class="row-duo">
             <div class="select-box">
                 <i class="fas fa-globe"></i>
@@ -465,7 +443,6 @@
             </div>
         </div>
 
-        <!-- FORMAT TOGGLE -->
         <div class="toggle-group">
             <div class="toggle-item">
                 <input type="radio" name="formatType" id="mp4Toggle" value="mp4" checked />
@@ -477,17 +454,14 @@
             </div>
         </div>
 
-        <!-- DOWNLOAD BUTTON -->
         <button class="btn-download" id="downloadBtn">
             <i class="fas fa-cloud-download-alt"></i> تحميل الآن
         </button>
 
-        <!-- RESULT -->
         <div class="result-area" id="resultArea">
             <span style="opacity:0.5;"><i class="fas fa-info-circle"></i> انتظر معاينة الفيديو</span>
         </div>
 
-        <!-- LEGAL -->
         <div class="legal-note">
             <i class="fas fa-exclamation-triangle"></i> للأغراض التعليمية فقط – استخدم APIs خارجية للتحميل.
         </div>
@@ -497,7 +471,6 @@
         (function() {
             "use strict";
 
-            // DOM Elements
             const urlInput = document.getElementById('videoUrl');
             const platformSelect = document.getElementById('platformSelect');
             const qualitySelect = document.getElementById('qualitySelect');
@@ -506,7 +479,6 @@
             const resultArea = document.getElementById('resultArea');
             const pasteBtn = document.getElementById('pasteBtn');
 
-            // ===== PASTE =====
             pasteBtn.addEventListener('click', async () => {
                 try {
                     const text = await navigator.clipboard.readText();
@@ -517,7 +489,6 @@
                 }
             });
 
-            // ===== GET SELECTED FORMAT =====
             function getSelectedFormat() {
                 for (const radio of formatRadios) {
                     if (radio.checked) return radio.value;
@@ -525,7 +496,6 @@
                 return 'mp4';
             }
 
-            // ===== SET RESULT =====
             function setResult(content, isError = false) {
                 if (isError) {
                     resultArea.innerHTML = `<div class="error-msg"><i class="fas fa-exclamation-circle"></i> ${content}</div>`;
@@ -534,7 +504,6 @@
                 }
             }
 
-            // ===== LOADING STATE =====
             function setLoading() {
                 setResult(`
                     <div style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap; justify-content:center;">
@@ -544,11 +513,11 @@
                 `);
             }
 
-            // ===== EXTRACT VIDEO ID =====
+            // ===== استخراج معرف الفيديو =====
             function extractVideoId(url, platform) {
                 try {
-                    const urlObj = new URL(url);
                     if (platform === 'youtube') {
+                        const urlObj = new URL(url);
                         if (urlObj.hostname.includes('youtu.be')) {
                             return urlObj.pathname.slice(1);
                         }
@@ -564,19 +533,18 @@
                 return null;
             }
 
-            // ===== GET DOWNLOAD URL FROM API =====
+            // ===== الحصول على رابط التحميل من API =====
             async function getDownloadUrl(url, platform, quality, format) {
                 const videoId = extractVideoId(url, platform);
                 if (!videoId) {
                     throw new Error('لم نتمكن من استخراج معرف الفيديو. تأكد من الرابط.');
                 }
 
-                // استخدام APIs خارجية مجانية
                 let apiUrl = '';
-                let responseData = null;
+                let response;
 
                 if (platform === 'youtube') {
-                    // استخدام API من Vevioz
+                    // استخدام API من ytdlapi.com
                     const qualityMap = {
                         '1080': '1080',
                         '720': '720',
@@ -587,11 +555,11 @@
                     const q = qualityMap[quality] || '720';
                     apiUrl = `https://api.vevioz.com/api/button/${q}/${videoId}`;
                     
-                    const response = await fetch(apiUrl);
-                    responseData = await response.json();
+                    response = await fetch(apiUrl);
+                    const data = await response.json();
                     
-                    if (responseData && responseData.download) {
-                        return responseData.download;
+                    if (data && data.download) {
+                        return data.download;
                     } else {
                         throw new Error('لم نجد رابط تحميل. حاول مرة أخرى.');
                     }
@@ -599,11 +567,11 @@
                 else if (platform === 'tiktok') {
                     // استخدام TikMate API
                     apiUrl = `https://tikmate.cc/api/url/${videoId}`;
-                    const response = await fetch(apiUrl);
-                    responseData = await response.json();
+                    response = await fetch(apiUrl);
+                    const data = await response.json();
                     
-                    if (responseData && responseData.url) {
-                        return responseData.url;
+                    if (data && data.url) {
+                        return data.url;
                     } else {
                         throw new Error('لم نجد رابط تحميل لتيك توك.');
                     }
@@ -611,11 +579,11 @@
                 else if (platform === 'instagram') {
                     // استخدام SnapInsta API
                     apiUrl = `https://snapinsta.app/api/action?url=${encodeURIComponent(url)}`;
-                    const response = await fetch(apiUrl);
-                    responseData = await response.json();
+                    response = await fetch(apiUrl);
+                    const data = await response.json();
                     
-                    if (responseData && responseData.download) {
-                        return responseData.download;
+                    if (data && data.download) {
+                        return data.download;
                     } else {
                         throw new Error('لم نجد رابط تحميل لإنستغرام.');
                     }
@@ -624,7 +592,7 @@
                 throw new Error('منصة غير مدعومة أو API غير متاح.');
             }
 
-            // ===== MAIN DOWNLOAD HANDLER =====
+            // ===== زر التحميل =====
             downloadBtn.addEventListener('click', async function(e) {
                 e.preventDefault();
 
@@ -638,7 +606,6 @@
                 const quality = qualitySelect.value;
                 const format = getSelectedFormat();
 
-                // تحقق من أن الصيغة متوافقة مع الجودة
                 let finalQuality = quality;
                 let finalFormat = format;
 
@@ -652,10 +619,8 @@
                 setLoading();
 
                 try {
-                    // محاولة جلب رابط التحميل
                     const downloadUrl = await getDownloadUrl(url, platform, finalQuality, finalFormat);
                     
-                    // عرض نتيجة مع رابط التحميل
                     const title = `فيديو من ${platform.charAt(0).toUpperCase() + platform.slice(1)}`;
                     const qualityDisplay = finalQuality === 'audio' ? 'صوت MP3' : `${finalQuality}p`;
                     
@@ -683,7 +648,7 @@
                 }
             });
 
-            // ===== AUTO-SWITCH FORMAT WHEN QUALITY = AUDIO =====
+            // ===== التبديل التلقائي بين الصيغ =====
             qualitySelect.addEventListener('change', function() {
                 if (this.value === 'audio') {
                     document.getElementById('mp3Toggle').checked = true;
@@ -695,7 +660,6 @@
                 }
             });
 
-            // ===== AUTO-SWITCH QUALITY WHEN FORMAT = MP3 =====
             formatRadios.forEach(radio => {
                 radio.addEventListener('change', function() {
                     if (this.value === 'mp3') {
@@ -712,7 +676,6 @@
                 });
             });
 
-            // ===== INITIAL MESSAGE =====
             setTimeout(() => {
                 resultArea.innerHTML = `<span style="opacity:0.4;"><i class="fas fa-arrow-left" style="margin-left:0.5rem;"></i> ألصق الرابط واضغط تحميل</span>`;
             }, 300);
