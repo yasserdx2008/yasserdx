@@ -2,1020 +2,721 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>DX - QR Code Generator</title>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js">
-    </script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dx Station – محمل وسائط حقيقي</title>
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <style>
+        /* ===== RESET & BASE ===== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
 
         body {
             min-height: 100vh;
             display: flex;
-            justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-            padding: 16px;
+            justify-content: center;
+            background: radial-gradient(circle at 20% 30%, #0b0e1a, #03050b);
+            padding: 1.5rem;
+            position: relative;
         }
 
-        .container {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 32px;
-            padding: 28px 22px;
-            max-width: 560px;
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: 
+                radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,0.15), transparent),
+                radial-gradient(2px 2px at 40% 70%, rgba(255,255,255,0.1), transparent),
+                radial-gradient(2px 2px at 80% 20%, rgba(255,255,255,0.2), transparent),
+                radial-gradient(2px 2px at 10% 90%, rgba(255,255,255,0.08), transparent);
+            background-size: 200% 200%;
+            animation: starDrift 30s linear infinite alternate;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes starDrift {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
+        }
+
+        /* ===== CARD ===== */
+        .dx-card {
+            position: relative;
+            z-index: 10;
+            max-width: 780px;
             width: 100%;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(18, 22, 40, 0.65);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 3.5rem 3.5rem 2.5rem 2.5rem;
+            padding: 2.8rem 2.2rem;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(120,80,255,0.15) inset;
+            animation: floatIn 0.7s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .header {
-            text-align: center;
-            margin-bottom: 24px;
+        @keyframes floatIn {
+            0% { opacity: 0; transform: translateY(40px) scale(0.96); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        .header .logo {
+        /* ===== HEADER ===== */
+        .brand {
             display: flex;
             align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
             justify-content: center;
-            gap: 12px;
         }
 
-        .header .logo-icon {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, #f7971e, #ffd200);
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            font-weight: 900;
-            color: #1a1a2e;
-            box-shadow: 0 8px 24px rgba(255, 210, 0, 0.25);
-        }
-
-        .header h1 {
-            font-size: 32px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #f7971e, #ffd200);
+        .brand i {
+            font-size: 2.8rem;
+            background: linear-gradient(135deg, #f093fb, #f5576c, #4facfe);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: -0.5px;
+            filter: drop-shadow(0 0 12px rgba(245,87,108,0.4));
+            animation: pulseGlow 2.8s infinite alternate;
         }
 
-        .header .subtitle {
-            color: rgba(255, 255, 255, 0.35);
-            font-size: 13px;
-            margin-top: 4px;
-            letter-spacing: 1px;
+        @keyframes pulseGlow {
+            0% { filter: drop-shadow(0 0 8px rgba(79,172,254,0.3)); }
+            100% { filter: drop-shadow(0 0 22px rgba(245,87,108,0.7)); }
         }
 
-        .header .subtitle span {
-            color: #ffd200;
-            -webkit-text-fill-color: #ffd200;
+        .brand h1 {
+            font-size: 2.3rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #f6d5f7, #fbe9d7, #b8e1fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .input-group {
+        .brand h1 span {
+            font-weight: 300;
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.9rem;
+        }
+
+        .subhead {
+            text-align: center;
+            color: rgba(220,220,255,0.7);
+            margin-bottom: 2rem;
+            font-weight: 300;
+            font-size: 0.95rem;
+            border-bottom: 1px dashed rgba(255,255,255,0.06);
+            padding-bottom: 0.9rem;
+        }
+
+        /* ===== FIELDS ===== */
+        .field-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .field-label {
             display: flex;
-            gap: 10px;
-            background: rgba(255, 255, 255, 0.06);
+            align-items: center;
+            gap: 0.5rem;
+            color: #b8b0e0;
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .field-label i { color: #7a6bcf; }
+
+        .url-input-wrapper {
+            display: flex;
+            align-items: center;
+            background: rgba(10,14,30,0.7);
             border-radius: 60px;
-            padding: 5px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.06);
+            transition: all 0.25s;
+            padding: 0.1rem 0.1rem 0.1rem 1.5rem;
         }
 
-        .input-group:focus-within {
-            border-color: #ffd200;
-            box-shadow: 0 0 20px rgba(255, 210, 0, 0.12);
+        .url-input-wrapper:focus-within {
+            border-color: #8b6bf0;
+            box-shadow: 0 0 0 4px rgba(139,107,240,0.25);
         }
 
-        .input-group input {
+        .url-input-wrapper input {
             flex: 1;
-            padding: 14px 20px;
-            border: none;
             background: transparent;
-            color: #fff;
-            font-size: 15px;
+            border: none;
+            padding: 1rem 0.5rem 1rem 0;
+            color: #f0eeff;
+            font-size: 1rem;
             outline: none;
             direction: ltr;
-            min-width: 0;
         }
 
-        .input-group input::placeholder {
-            color: rgba(255, 255, 255, 0.25);
+        .url-input-wrapper input::placeholder {
+            color: rgba(200,195,230,0.35);
+            font-weight: 300;
         }
 
-        .input-group button {
-            padding: 12px 22px;
+        .url-input-wrapper .icon-btn {
+            background: linear-gradient(145deg, #3e2f6b, #291e4a);
+            color: #cbb5ff;
             border: none;
-            border-radius: 40px;
-            background: linear-gradient(135deg, #f7971e, #ffd200);
-            color: #1a1a2e;
+            width: 3.2rem;
+            height: 3.2rem;
+            border-radius: 60px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .url-input-wrapper .icon-btn:hover {
+            background: linear-gradient(145deg, #6a4fc9, #4a2f8a);
+            color: #fff;
+            transform: scale(1.02);
+        }
+
+        /* ===== ROW DUO ===== */
+        .row-duo {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 500px) {
+            .row-duo { grid-template-columns: 1fr; }
+        }
+
+        .select-box {
+            background: rgba(10,14,30,0.6);
+            border-radius: 30px;
+            padding: 0.2rem 0.2rem 0.2rem 1.2rem;
+            border: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            transition: 0.25s;
+        }
+
+        .select-box:focus-within {
+            border-color: #7b62d9;
+            box-shadow: 0 0 0 3px rgba(123,98,217,0.25);
+        }
+
+        .select-box i { color: #9280d9; margin-left: 0.3rem; }
+
+        .select-box select {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 0.9rem 0.2rem;
+            color: #eceaff;
+            font-size: 0.95rem;
+            font-weight: 500;
+            outline: none;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        .select-box select option {
+            background: #1a1e32;
+            color: #eee;
+        }
+
+        .select-box .select-icon {
+            padding-left: 1rem;
+            color: #5b4b8a;
+        }
+
+        /* ===== TOGGLE MP3 / MP4 ===== */
+        .toggle-group {
+            display: flex;
+            gap: 0.8rem;
+            margin-bottom: 1.8rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .toggle-item {
+            flex: 1;
+            min-width: 100px;
+        }
+
+        .toggle-item input { display: none; }
+
+        .toggle-item label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            background: rgba(15,20,40,0.5);
+            padding: 0.9rem 0.5rem;
+            border-radius: 60px;
+            border: 1px solid rgba(255,255,255,0.04);
+            color: #9a94b8;
+            font-weight: 500;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+
+        .toggle-item input:checked+label {
+            background: linear-gradient(145deg, #372e6b, #231b4a);
+            border-color: #896eda;
+            color: #ffffff;
+            box-shadow: 0 4px 20px rgba(100,70,200,0.3);
+            transform: scale(1.02);
+        }
+
+        /* ===== BUTTON ===== */
+        .btn-download {
+            width: 100%;
+            background: linear-gradient(135deg, #6c4fcd, #9f6ef0, #f093fb);
+            background-size: 200% 200%;
+            border: none;
+            padding: 1.2rem;
+            border-radius: 80px;
+            font-size: 1.3rem;
             font-weight: 700;
-            font-size: 14px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
             cursor: pointer;
             transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            white-space: nowrap;
+            box-shadow: 0 8px 28px rgba(100,60,200,0.35);
+            animation: gradientShift 4s ease infinite alternate;
         }
 
-        .input-group button:active {
-            transform: scale(0.95);
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
         }
 
-        .qr-display {
+        .btn-download:hover {
+            transform: scale(1.02) translateY(-2px);
+            box-shadow: 0 14px 40px rgba(120,70,255,0.5);
+        }
+
+        .btn-download:active { transform: scale(0.96); }
+
+        /* ===== RESULT AREA ===== */
+        .result-area {
+            margin-top: 1.8rem;
+            padding: 1rem;
+            min-height: 80px;
+            border-radius: 30px;
+            background: rgba(0,0,0,0.15);
+            backdrop-filter: blur(8px);
+            border: 1px dashed rgba(255,255,255,0.03);
+            transition: 0.3s;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            margin: 24px 0 20px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 24px;
-            border: 1px dashed rgba(255, 255, 255, 0.06);
-            min-height: 200px;
             justify-content: center;
-            transition: all 0.4s ease;
-        }
-
-        .qr-display.has-qr {
-            border-style: solid;
-            border-color: rgba(255, 210, 0, 0.15);
-            background: rgba(255, 210, 0, 0.03);
-        }
-
-        #qrcode {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-        }
-
-        #qrcode canvas {
-            border-radius: 16px;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
-            max-width: 100%;
-            height: auto;
-            width: auto !important;
-            max-height: 300px;
-            image-rendering: auto;
-        }
-
-        @media (max-width: 480px) {
-            #qrcode canvas {
-                max-height: 220px;
-            }
-        }
-
-        #qrcode img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 16px;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
-        }
-
-        .qr-placeholder {
-            color: rgba(255, 255, 255, 0.12);
-            font-size: 13px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .qr-placeholder i {
-            font-size: 44px;
-            opacity: 0.3;
-        }
-
-        .link-preview {
-            display: none;
-            background: rgba(255, 255, 255, 0.04);
-            padding: 10px 14px;
-            border-radius: 14px;
-            margin-top: 12px;
-            width: 100%;
-            text-align: center;
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 12px;
-            word-break: break-all;
-            direction: ltr;
-        }
-
-        .link-preview.show {
-            display: block;
-            animation: fadeInUp 0.3s ease;
-        }
-
-        .link-preview span {
-            color: #ffd200;
-            font-weight: 500;
-        }
-
-        .quality-badge {
-            display: inline-block;
-            background: rgba(255, 210, 0, 0.08);
-            border: 1px solid rgba(255, 210, 0, 0.12);
-            border-radius: 20px;
-            padding: 3px 14px;
-            font-size: 10px;
-            color: #ffd200;
-            margin-top: 8px;
-            letter-spacing: 0.5px;
-            font-weight: 500;
-        }
-
-        .actions {
-            display: flex;
+            color: #b1a8d9;
+            font-size: 0.95rem;
+            gap: 1rem;
             flex-wrap: wrap;
-            gap: 8px;
-            justify-content: center;
-            margin-top: 4px;
         }
 
-        .actions button {
-            flex: 1;
-            min-width: 70px;
-            padding: 12px 10px;
-            border: none;
-            border-radius: 50px;
-            font-size: 12px;
+        .result-area .preview {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            width: 100%;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .result-area .preview img {
+            max-width: 100px;
+            border-radius: 20px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .result-area .info { text-align: right; }
+
+        .result-area .info strong {
+            color: #e6ddff;
+            display: block;
+            font-size: 1rem;
+        }
+
+        .result-area .info small {
+            color: #9588b8;
+            font-size: 0.8rem;
+        }
+
+        .result-area .badge {
+            background: #2a2348;
+            padding: 0.25rem 1rem;
+            border-radius: 60px;
+            font-size: 0.75rem;
+            color: #b7a5f0;
+            border: 1px solid #3d3260;
+        }
+
+        .error-msg {
+            color: #f6798b;
+            background: rgba(220,60,90,0.12);
+            padding: 0.6rem 1.2rem;
+            border-radius: 60px;
+            border: 1px solid rgba(255,90,120,0.15);
+        }
+
+        .download-link {
+            display: inline-block;
+            background: #2d2255;
+            color: #fff;
+            padding: 0.6rem 1.5rem;
+            border-radius: 60px;
+            text-decoration: none;
             font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            background: rgba(255, 255, 255, 0.06);
-            color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            -webkit-tap-highlight-color: transparent;
+            transition: 0.2s;
+            border: 1px solid #5b45a0;
         }
 
-        .actions button:active {
-            transform: scale(0.94);
+        .download-link:hover {
+            background: #4a3580;
+            transform: scale(1.05);
         }
 
-        .actions .btn-primary {
-            background: linear-gradient(135deg, #f7971e, #ffd200);
-            color: #1a1a2e;
-            border: none;
+        .spinner {
+            display: inline-block;
+            width: 1.4rem;
+            height: 1.4rem;
+            border: 3px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+            border-top-color: #b49aff;
+            animation: spin 0.8s linear infinite;
         }
 
-        .actions .btn-share {
-            background: rgba(0, 200, 150, 0.1);
-            border-color: rgba(0, 200, 150, 0.12);
-            color: #5cd6b0;
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        .actions .btn-hd {
-            background: rgba(255, 100, 100, 0.1);
-            border-color: rgba(255, 100, 100, 0.12);
-            color: #ff8a8a;
-        }
-
-        .history-section {
-            margin-top: 24px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            padding-top: 16px;
-        }
-
-        .history-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: rgba(255, 255, 255, 0.25);
-            font-size: 12px;
-            margin-bottom: 10px;
-        }
-
-        .history-header button {
-            background: none;
-            border: none;
-            color: rgba(255, 80, 80, 0.4);
-            cursor: pointer;
-            font-size: 11px;
-            transition: color 0.3s;
-            padding: 4px 8px;
-        }
-
-        .history-header button:active {
-            color: rgba(255, 80, 80, 0.8);
-        }
-
-        .history-list {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            max-height: 120px;
-            overflow-y: auto;
-            padding-right: 2px;
-        }
-
-        .history-list::-webkit-scrollbar {
-            width: 3px;
-        }
-
-        .history-list::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-        }
-
-        .history-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.03);
-            padding: 8px 12px;
-            border-radius: 12px;
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.4);
-            transition: all 0.2s;
-            cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .history-item:active {
-            background: rgba(255, 255, 255, 0.08);
-        }
-
-        .history-item .url {
-            flex: 1;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            direction: ltr;
-            margin-left: 8px;
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 11px;
-        }
-
-        .history-item .date {
-            font-size: 10px;
-            color: rgba(255, 255, 255, 0.15);
-            white-space: nowrap;
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%) translateY(80px);
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(12px);
-            padding: 12px 24px;
-            border-radius: 50px;
-            color: #fff;
-            font-size: 13px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            opacity: 0;
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            pointer-events: none;
-            z-index: 999;
-            max-width: 90%;
+        .legal-note {
+            margin-top: 2rem;
+            font-size: 0.7rem;
+            color: rgba(180,170,210,0.25);
             text-align: center;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+            border-top: 1px solid rgba(255,255,255,0.03);
+            padding-top: 1.2rem;
         }
 
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        .toast.success {
-            border-color: rgba(255, 210, 0, 0.25);
-        }
-        .toast.error {
-            border-color: rgba(255, 80, 80, 0.25);
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(12px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 18px 14px;
-                border-radius: 24px;
-            }
-            .header .logo-icon {
-                width: 40px;
-                height: 40px;
-                font-size: 20px;
-            }
-            .header h1 {
-                font-size: 26px;
-            }
-            .input-group {
-                flex-direction: column;
-                background: transparent;
-                padding: 0;
-                border: none;
-                gap: 8px;
-            }
-            .input-group input {
-                background: rgba(255, 255, 255, 0.05);
-                border-radius: 60px;
-                padding: 14px 18px;
-                border: 1px solid rgba(255, 255, 255, 0.06);
-                font-size: 14px;
-            }
-            .input-group button {
-                justify-content: center;
-                padding: 14px;
-                font-size: 14px;
-            }
-            .actions button {
-                min-width: 55px;
-                font-size: 10px;
-                padding: 10px 6px;
-            }
-            .qr-display {
-                padding: 12px;
-                min-height: 160px;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .container {
-                padding: 40px 38px;
-            }
-        }
+        .legal-note i { margin-left: 0.3rem; color: #4d3f7a; }
     </style>
 </head>
 <body>
-
-    <div class="container">
-        <div class="header">
-            <div class="logo">
-                <div class="logo-icon">DX</div>
-                <h1>DX</h1>
-            </div>
-            <p class="subtitle">QR Code Generator <span>• عالي الجودة</span></p>
+    <div class="dx-card">
+        <!-- HEADER -->
+        <div class="brand">
+            <i class="fas fa-bolt"></i>
+            <h1>Dx <span>Station</span></h1>
+            <i class="fas fa-download" style="font-size:1.6rem; -webkit-text-fill-color:initial; color:#6a5aa0;"></i>
+        </div>
+        <div class="subhead">
+            <i class="fas fa-link" style="margin-left:0.5rem; opacity:0.5;"></i> 
+            ألصق الرابط، اختر المنصة، وحدد الجودة
         </div>
 
-        <div class="input-group">
-            <input type="url" id="urlInput" placeholder="https://example.com" spellcheck="false" inputmode="url" />
-            <button id="generateBtn">
-                <i class="fas fa-wand-magic-sparkles"></i> إنشاء
-            </button>
-        </div>
-
-        <div class="qr-display" id="qrDisplay">
-            <div id="qrcode">
-                <div class="qr-placeholder">
-                    <i class="fas fa-qrcode"></i>
-                    <span>سيظهر الكود هنا</span>
-                </div>
+        <!-- URL INPUT -->
+        <div class="field-group">
+            <div class="field-label">
+                <i class="fas fa-paste"></i> رابط الفيديو
             </div>
-            <div class="quality-badge" id="qualityBadge">🔹 جودة عالية 1024×1024</div>
-            <div class="link-preview" id="linkPreview">
-                <i class="fas fa-link" style="margin-left:6px;opacity:0.3;"></i>
-                <span id="linkText">https://example.com</span>
+            <div class="url-input-wrapper">
+                <input type="text" id="videoUrl" placeholder="https://www.youtube.com/... أو https://www.tiktok.com/..." value="https://www.youtube.com/watch?v=dQw4w9WgXcQ" />
+                <button class="icon-btn" id="pasteBtn" title="لصق"><i class="fas fa-paste"></i></button>
             </div>
         </div>
 
-        <div class="actions">
-            <button class="btn-primary" id="downloadPngBtn">
-                <i class="fas fa-download"></i> PNG
-            </button>
-            <button class="btn-hd" id="downloadHDPngBtn">
-                <i class="fas fa-image"></i> HD
-            </button>
-            <button id="shareBtn" class="btn-share">
-                <i class="fas fa-share-alt"></i> مشاركة
-            </button>
-            <button id="copyBtn">
-                <i class="fas fa-copy"></i> نسخ
-            </button>
-            <button id="clearBtn" style="color:rgba(255,80,80,0.3);">
-                <i class="fas fa-trash-can"></i>
-            </button>
+        <!-- PLATFORM + QUALITY -->
+        <div class="row-duo">
+            <div class="select-box">
+                <i class="fas fa-globe"></i>
+                <select id="platformSelect">
+                    <option value="youtube">YouTube</option>
+                    <option value="instagram">Instagram</option>
+                    <option value="tiktok">TikTok</option>
+                </select>
+                <span class="select-icon"><i class="fas fa-chevron-down"></i></span>
+            </div>
+            <div class="select-box">
+                <i class="fas fa-sliders-h"></i>
+                <select id="qualitySelect">
+                    <option value="1080">1080p (Full HD)</option>
+                    <option value="720" selected>720p (HD)</option>
+                    <option value="480">480p (SD)</option>
+                    <option value="360">360p (Low)</option>
+                    <option value="audio">🎵 صوت MP3</option>
+                </select>
+                <span class="select-icon"><i class="fas fa-chevron-down"></i></span>
+            </div>
         </div>
 
-        <div class="history-section">
-            <div class="history-header">
-                <span><i class="far fa-clock" style="margin-left:5px;"></i> السجل</span>
-                <button id="clearHistoryBtn"><i class="fas fa-trash-alt"></i> مسح الكل</button>
+        <!-- FORMAT TOGGLE -->
+        <div class="toggle-group">
+            <div class="toggle-item">
+                <input type="radio" name="formatType" id="mp4Toggle" value="mp4" checked />
+                <label for="mp4Toggle"><i class="fas fa-film"></i> MP4 (فيديو)</label>
             </div>
-            <div class="history-list" id="historyList">
-                <div style="color:rgba(255,255,255,0.08);font-size:12px;text-align:center;padding:10px;">
-                    لا يوجد روابط محفوظة
-                </div>
+            <div class="toggle-item">
+                <input type="radio" name="formatType" id="mp3Toggle" value="mp3" />
+                <label for="mp3Toggle"><i class="fas fa-music"></i> MP3 (صوت)</label>
             </div>
+        </div>
+
+        <!-- DOWNLOAD BUTTON -->
+        <button class="btn-download" id="downloadBtn">
+            <i class="fas fa-cloud-download-alt"></i> تحميل الآن
+        </button>
+
+        <!-- RESULT -->
+        <div class="result-area" id="resultArea">
+            <span style="opacity:0.5;"><i class="fas fa-info-circle"></i> انتظر معاينة الفيديو</span>
+        </div>
+
+        <!-- LEGAL -->
+        <div class="legal-note">
+            <i class="fas fa-exclamation-triangle"></i> للأغراض التعليمية فقط – استخدم APIs خارجية للتحميل.
         </div>
     </div>
 
-    <div class="toast" id="toast"></div>
-
     <script>
         (function() {
-            'use strict';
+            "use strict";
 
-            // ===== العناصر =====
-            const urlInput = document.getElementById('urlInput');
-            const generateBtn = document.getElementById('generateBtn');
-            const qrContainer = document.getElementById('qrcode');
-            const qrDisplay = document.getElementById('qrDisplay');
-            const linkPreview = document.getElementById('linkPreview');
-            const linkText = document.getElementById('linkText');
-            const downloadPngBtn = document.getElementById('downloadPngBtn');
-            const downloadHDPngBtn = document.getElementById('downloadHDPngBtn');
-            const shareBtn = document.getElementById('shareBtn');
-            const copyBtn = document.getElementById('copyBtn');
-            const clearBtn = document.getElementById('clearBtn');
-            const historyList = document.getElementById('historyList');
-            const clearHistoryBtn = document.getElementById('clearHistoryBtn');
-            const toast = document.getElementById('toast');
-            const qualityBadge = document.getElementById('qualityBadge');
+            // DOM Elements
+            const urlInput = document.getElementById('videoUrl');
+            const platformSelect = document.getElementById('platformSelect');
+            const qualitySelect = document.getElementById('qualitySelect');
+            const formatRadios = document.querySelectorAll('input[name="formatType"]');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const resultArea = document.getElementById('resultArea');
+            const pasteBtn = document.getElementById('pasteBtn');
 
-            let currentUrl = '';
-            let currentCanvas = null;
-            let history = [];
-
-            // ===== إعدادات الجودة =====
-            const QR_SIZE = 1024;
-
-            // ===== IndexedDB =====
-            const DB_NAME = 'DX_QR_History';
-            const STORE_NAME = 'history';
-            let db = null;
-
-            function openDB() {
-                return new Promise((resolve, reject) => {
-                    const request = indexedDB.open(DB_NAME, 1);
-                    request.onupgradeneeded = function(e) {
-                        const db = e.target.result;
-                        if (!db.objectStoreNames.contains(STORE_NAME)) {
-                            const store = db.createObjectStore(STORE_NAME, { keyPath: 'id',
-                            autoIncrement: true });
-                            store.createIndex('url', 'url', { unique: false });
-                            store.createIndex('date', 'date', { unique: false });
-                        }
-                    };
-                    request.onsuccess = function(e) {
-                        db = e.target.result;
-                        resolve(db);
-                    };
-                    request.onerror = function(e) {
-                        reject(e.target.error);
-                    };
-                });
-            }
-
-            function saveHistoryToDB(historyArray) {
-                return new Promise((resolve, reject) => {
-                    if (!db) { reject('DB not open'); return; }
-                    const tx = db.transaction(STORE_NAME, 'readwrite');
-                    const store = tx.objectStore(STORE_NAME);
-                    const clearReq = store.clear();
-                    clearReq.onsuccess = function() {
-                        let count = 0;
-                        if (historyArray.length === 0) { resolve(); return; }
-                        historyArray.forEach((item) => {
-                            const addReq = store.add(item);
-                            addReq.onsuccess = function() {
-                                count++;
-                                if (count === historyArray.length) resolve();
-                            };
-                            addReq.onerror = function(e) {
-                                reject(e.target.error);
-                            };
-                        });
-                    };
-                    clearReq.onerror = function(e) {
-                        reject(e.target.error);
-                    };
-                });
-            }
-
-            function loadHistoryFromDB() {
-                return new Promise((resolve, reject) => {
-                    if (!db) { reject('DB not open'); return; }
-                    const tx = db.transaction(STORE_NAME, 'readonly');
-                    const store = tx.objectStore(STORE_NAME);
-                    const request = store.getAll();
-                    request.onsuccess = function() {
-                        const data = request.result || [];
-                        data.sort((a, b) => new Date(b.date) - new Date(a.date));
-                        resolve(data);
-                    };
-                    request.onerror = function(e) {
-                        reject(e.target.error);
-                    };
-                });
-            }
-
-            function deleteHistoryFromDB() {
-                return new Promise((resolve, reject) => {
-                    if (!db) { reject('DB not open'); return; }
-                    const tx = db.transaction(STORE_NAME, 'readwrite');
-                    const store = tx.objectStore(STORE_NAME);
-                    const req = store.clear();
-                    req.onsuccess = function() { resolve(); };
-                    req.onerror = function(e) { reject(e.target.error); };
-                });
-            }
-
-            async function initDB() {
+            // ===== PASTE =====
+            pasteBtn.addEventListener('click', async () => {
                 try {
-                    await openDB();
-                    const data = await loadHistoryFromDB();
-                    history = data;
-                    renderHistory();
-                } catch (e) {
-                    console.warn('IndexedDB غير متاح، نستخدم LocalStorage', e);
-                    loadHistoryFromLocal();
-                }
-            }
-
-            function loadHistoryFromLocal() {
-                try {
-                    const stored = localStorage.getItem('dx_qr_history');
-                    if (stored) {
-                        history = JSON.parse(stored);
-                        if (!Array.isArray(history)) history = [];
-                    }
-                } catch (_) { history = []; }
-                renderHistory();
-            }
-
-            async function saveHistory() {
-                try {
-                    if (db) {
-                        await saveHistoryToDB(history);
-                    } else {
-                        localStorage.setItem('dx_qr_history', JSON.stringify(history));
-                    }
-                } catch (e) {
-                    localStorage.setItem('dx_qr_history', JSON.stringify(history));
-                }
-                renderHistory();
-            }
-
-            async function addToHistory(url) {
-                if (!url || url.trim() === '') return;
-                history = history.filter(item => item.url !== url);
-                history.unshift({
-                    url: url,
-                    date: new Date().toISOString()
-                });
-                if (history.length > 30) history.pop();
-                await saveHistory();
-            }
-
-            function renderHistory() {
-                if (!history || history.length === 0) {
-                    historyList.innerHTML =
-                        `<div style="color:rgba(255,255,255,0.08);font-size:12px;text-align:center;padding:10px;">لا يوجد روابط محفوظة</div>`;
-                    return;
-                }
-                let html = '';
-                history.forEach((item) => {
-                    const displayDate = item.date ? new Date(item.date).toLocaleString('ar-EG', { hour12: false }) :
-                        '';
-                    html += `
-                            <div class="history-item" data-url="${encodeURIComponent(item.url)}">
-                                <span class="url">${item.url}</span>
-                                <span class="date">${displayDate}</span>
-                            </div>
-                        `;
-                });
-                historyList.innerHTML = html;
-                document.querySelectorAll('.history-item').forEach(el => {
-                    el.addEventListener('click', function() {
-                        const url = decodeURIComponent(this.dataset.url);
-                        urlInput.value = url;
-                        generateQR(url);
-                    });
-                });
-            }
-
-            async function clearHistory() {
-                if (!history || history.length === 0) return;
-                history = [];
-                try {
-                    if (db) {
-                        await deleteHistoryFromDB();
-                    } else {
-                        localStorage.removeItem('dx_qr_history');
-                    }
-                } catch (_) { localStorage.removeItem('dx_qr_history'); }
-                renderHistory();
-                showToast('🗑️ تم مسح السجل', 'success');
-            }
-
-            // ===== إنشاء QR =====
-            function generateQR(url) {
-                if (!url || url.trim() === '') {
-                    showToast('⚠️ الرجاء إدخال رابط', 'error');
-                    return;
-                }
-
-                let finalUrl = url.trim();
-                if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
-                    finalUrl = 'https://' + finalUrl;
-                }
-
-                currentUrl = finalUrl;
-
-                qrContainer.innerHTML = '';
-                qrDisplay.classList.add('has-qr');
-
-                new QRCode(qrContainer, {
-                    text: finalUrl,
-                    width: QR_SIZE,
-                    height: QR_SIZE,
-                    colorDark: '#ffffff',
-                    colorLight: 'transparent',
-                    correctLevel: QRCode.CorrectLevel.H
-                });
-
-                linkText.textContent = finalUrl;
-                linkPreview.classList.add('show');
-
-                setTimeout(() => {
-                    const canvas = qrContainer.querySelector('canvas');
-                    if (canvas) {
-                        canvas.style.maxWidth = '100%';
-                        canvas.style.height = 'auto';
-                        currentCanvas = canvas;
-                        qualityBadge.textContent = '🔹 جودة عالية ' + QR_SIZE + '×' + QR_SIZE;
-                    }
-                }, 200);
-
-                addToHistory(finalUrl);
-                showToast('✅ تم إنشاء QR عالي الجودة', 'success');
-            }
-
-            // ===== تحميل HD (1024×1024) =====
-            function downloadHD() {
-                let canvas = qrContainer.querySelector('canvas');
-                if (!canvas) {
-                    setTimeout(() => {
-                        canvas = qrContainer.querySelector('canvas');
-                        if (canvas) {
-                            performDownloadHD(canvas);
-                        } else {
-                            showToast('⚠️ انتظر حتى يظهر الـ QR', 'error');
-                        }
-                    }, 300);
-                    return;
-                }
-                performDownloadHD(canvas);
-            }
-
-            function performDownloadHD(canvas) {
-                try {
-                    if (canvas.toBlob) {
-                        canvas.toBlob(function(blob) {
-                            if (!blob) {
-                                fallbackDownload(canvas, 'HD');
-                                return;
-                            }
-                            const link = document.createElement('a');
-                            link.download = `DX_QR_HD_${Date.now()}.png`;
-                            link.href = URL.createObjectURL(blob);
-                            document.body.appendChild(link);
-                            link.click();
-                            setTimeout(() => {
-                                document.body.removeChild(link);
-                                URL.revokeObjectURL(link.href);
-                            }, 100);
-                            showToast('✅ تم تحميل HD', 'success');
-                        }, 'image/png', 1.0);
-                    } else {
-                        fallbackDownload(canvas, 'HD');
-                    }
-                } catch (error) {
-                    fallbackDownload(canvas, 'HD');
-                }
-            }
-
-            // ===== تحميل PNG عادي =====
-            function downloadPNG() {
-                let canvas = qrContainer.querySelector('canvas');
-                if (!canvas) {
-                    setTimeout(() => {
-                        canvas = qrContainer.querySelector('canvas');
-                        if (canvas) {
-                            performDownloadPNG(canvas);
-                        } else {
-                            showToast('⚠️ انتظر حتى يظهر الـ QR', 'error');
-                        }
-                    }, 300);
-                    return;
-                }
-                performDownloadPNG(canvas);
-            }
-
-            function performDownloadPNG(canvas) {
-                try {
-                    const tempCanvas = document.createElement('canvas');
-                    const size = 512;
-                    tempCanvas.width = size;
-                    tempCanvas.height = size;
-                    const ctx = tempCanvas.getContext('2d');
-                    ctx.imageSmoothingEnabled = true;
-                    ctx.imageSmoothingQuality = 'high';
-                    ctx.drawImage(canvas, 0, 0, size, size);
-
-                    tempCanvas.toBlob(function(blob) {
-                        if (!blob) {
-                            fallbackDownload(tempCanvas, 'PNG');
-                            return;
-                        }
-                        const link = document.createElement('a');
-                        link.download = `DX_QR_${Date.now()}.png`;
-                        link.href = URL.createObjectURL(blob);
-                        document.body.appendChild(link);
-                        link.click();
-                        setTimeout(() => {
-                            document.body.removeChild(link);
-                            URL.revokeObjectURL(link.href);
-                        }, 100);
-                        showToast('✅ تم تحميل PNG', 'success');
-                    }, 'image/png', 1.0);
-                } catch (error) {
-                    fallbackDownload(canvas, 'PNG');
-                }
-            }
-
-            // ===== طريقة احتياطية للتحميل =====
-            function fallbackDownload(canvas, type) {
-                try {
-                    const dataUrl = canvas.toDataURL('image/png');
-                    const link = document.createElement('a');
-                    link.download = `DX_QR_${type}_${Date.now()}.png`;
-                    link.href = dataUrl;
-                    link.style.display = 'none';
-                    document.body.appendChild(link);
-                    setTimeout(() => {
-                        link.click();
-                        setTimeout(() => {
-                            document.body.removeChild(link);
-                        }, 200);
-                    }, 50);
-                    showToast(`✅ تم تحميل ${type}`, 'success');
-                } catch (error) {
-                    showToast('⚠️ فشل التحميل', 'error');
-                }
-            }
-
-            // ===== مشاركة =====
-            function shareQR() {
-                let canvas = qrContainer.querySelector('canvas');
-                if (!canvas) {
-                    showToast('⚠️ انتظر حتى يظهر الـ QR', 'error');
-                    return;
-                }
-
-                if (navigator.share) {
-                    canvas.toBlob(function(blob) {
-                        if (!blob) {
-                            showToast('⚠️ لا يمكن مشاركة الصورة', 'error');
-                            return;
-                        }
-                        const file = new File([blob], `DX_QR_${Date.now()}.png`, { type: 'image/png' });
-                        navigator.share({
-                            title: 'DX QR Code',
-                            text: currentUrl || 'QR Code',
-                            files: [file]
-                        }).catch(() => {});
-                    }, 'image/png');
-                } else {
-                    downloadPNG();
-                }
-            }
-
-            // ===== نسخ =====
-            function copyLink() {
-                if (!currentUrl) {
-                    showToast('⚠️ لا يوجد رابط لنسخه', 'error');
-                    return;
-                }
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(currentUrl).then(() => {
-                        showToast('📋 تم نسخ الرابط', 'success');
-                    }).catch(() => {
-                        fallbackCopy();
-                    });
-                } else {
-                    fallbackCopy();
-                }
-            }
-
-            function fallbackCopy() {
-                const textArea = document.createElement('textarea');
-                textArea.value = currentUrl;
-                textArea.style.position = 'fixed';
-                textArea.style.opacity = '0';
-                textArea.style.left = '-9999px';
-                document.body.appendChild(textArea);
-                textArea.select();
-                try {
-                    document.execCommand('copy');
-                    showToast('📋 تم نسخ الرابط', 'success');
+                    const text = await navigator.clipboard.readText();
+                    if (text) urlInput.value = text;
                 } catch (_) {
-                    showToast('⚠️ لم يتم النسخ', 'error');
+                    urlInput.focus();
+                    document.execCommand('paste');
                 }
-                document.body.removeChild(textArea);
+            });
+
+            // ===== GET SELECTED FORMAT =====
+            function getSelectedFormat() {
+                for (const radio of formatRadios) {
+                    if (radio.checked) return radio.value;
+                }
+                return 'mp4';
             }
 
-            // ===== مسح =====
-            function clearAll() {
-                urlInput.value = '';
-                qrContainer.innerHTML = `<div class="qr-placeholder">
-                            <i class="fas fa-qrcode"></i>
-                            <span>سيظهر الكود هنا</span>
-                        </div>`;
-                qrDisplay.classList.remove('has-qr');
-                linkPreview.classList.remove('show');
-                currentUrl = '';
-                currentCanvas = null;
-                qualityBadge.textContent = '🔹 جودة عالية 1024×1024';
-                showToast('🗑️ تم المسح', 'success');
+            // ===== SET RESULT =====
+            function setResult(content, isError = false) {
+                if (isError) {
+                    resultArea.innerHTML = `<div class="error-msg"><i class="fas fa-exclamation-circle"></i> ${content}</div>`;
+                } else {
+                    resultArea.innerHTML = content;
+                }
             }
 
-            // ===== إشعار =====
-            let toastTimer = null;
-
-            function showToast(message, type = 'success') {
-                toast.textContent = message;
-                toast.className = 'toast ' + type;
-                void toast.offsetWidth;
-                toast.classList.add('show');
-                clearTimeout(toastTimer);
-                toastTimer = setTimeout(() => {
-                    toast.classList.remove('show');
-                }, 2000);
+            // ===== LOADING STATE =====
+            function setLoading() {
+                setResult(`
+                    <div style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap; justify-content:center;">
+                        <span class="spinner"></span>
+                        <span style="color:#c9beff;">جاري جلب معلومات الفيديو...</span>
+                    </div>
+                `);
             }
 
-            // ===== أحداث =====
-            generateBtn.addEventListener('click', function(e) {
+            // ===== EXTRACT VIDEO ID =====
+            function extractVideoId(url, platform) {
+                try {
+                    const urlObj = new URL(url);
+                    if (platform === 'youtube') {
+                        if (urlObj.hostname.includes('youtu.be')) {
+                            return urlObj.pathname.slice(1);
+                        }
+                        return urlObj.searchParams.get('v');
+                    } else if (platform === 'tiktok') {
+                        const match = url.match(/\/video\/(\d+)/);
+                        return match ? match[1] : null;
+                    } else if (platform === 'instagram') {
+                        const match = url.match(/\/p\/([A-Za-z0-9_-]+)/);
+                        return match ? match[1] : null;
+                    }
+                } catch (_) { return null; }
+                return null;
+            }
+
+            // ===== GET DOWNLOAD URL FROM API =====
+            async function getDownloadUrl(url, platform, quality, format) {
+                const videoId = extractVideoId(url, platform);
+                if (!videoId) {
+                    throw new Error('لم نتمكن من استخراج معرف الفيديو. تأكد من الرابط.');
+                }
+
+                // استخدام APIs خارجية مجانية
+                let apiUrl = '';
+                let responseData = null;
+
+                if (platform === 'youtube') {
+                    // استخدام API من Vevioz
+                    const qualityMap = {
+                        '1080': '1080',
+                        '720': '720',
+                        '480': '480',
+                        '360': '360',
+                        'audio': 'mp3'
+                    };
+                    const q = qualityMap[quality] || '720';
+                    apiUrl = `https://api.vevioz.com/api/button/${q}/${videoId}`;
+                    
+                    const response = await fetch(apiUrl);
+                    responseData = await response.json();
+                    
+                    if (responseData && responseData.download) {
+                        return responseData.download;
+                    } else {
+                        throw new Error('لم نجد رابط تحميل. حاول مرة أخرى.');
+                    }
+                } 
+                else if (platform === 'tiktok') {
+                    // استخدام TikMate API
+                    apiUrl = `https://tikmate.cc/api/url/${videoId}`;
+                    const response = await fetch(apiUrl);
+                    responseData = await response.json();
+                    
+                    if (responseData && responseData.url) {
+                        return responseData.url;
+                    } else {
+                        throw new Error('لم نجد رابط تحميل لتيك توك.');
+                    }
+                }
+                else if (platform === 'instagram') {
+                    // استخدام SnapInsta API
+                    apiUrl = `https://snapinsta.app/api/action?url=${encodeURIComponent(url)}`;
+                    const response = await fetch(apiUrl);
+                    responseData = await response.json();
+                    
+                    if (responseData && responseData.download) {
+                        return responseData.download;
+                    } else {
+                        throw new Error('لم نجد رابط تحميل لإنستغرام.');
+                    }
+                }
+
+                throw new Error('منصة غير مدعومة أو API غير متاح.');
+            }
+
+            // ===== MAIN DOWNLOAD HANDLER =====
+            downloadBtn.addEventListener('click', async function(e) {
                 e.preventDefault();
-                const url = urlInput.value.trim();
-                if (url) generateQR(url);
-                else showToast('⚠️ الرجاء إدخال رابط', 'error');
-            });
 
-            urlInput.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    generateBtn.click();
+                const url = urlInput.value.trim();
+                if (!url) {
+                    setResult('⚠️ الرجاء إدخال رابط الفيديو', true);
+                    return;
+                }
+
+                const platform = platformSelect.value;
+                const quality = qualitySelect.value;
+                const format = getSelectedFormat();
+
+                // تحقق من أن الصيغة متوافقة مع الجودة
+                let finalQuality = quality;
+                let finalFormat = format;
+
+                if (quality === 'audio' || finalFormat === 'mp3') {
+                    finalFormat = 'mp3';
+                    finalQuality = 'audio';
+                } else {
+                    finalFormat = 'mp4';
+                }
+
+                setLoading();
+
+                try {
+                    // محاولة جلب رابط التحميل
+                    const downloadUrl = await getDownloadUrl(url, platform, finalQuality, finalFormat);
+                    
+                    // عرض نتيجة مع رابط التحميل
+                    const title = `فيديو من ${platform.charAt(0).toUpperCase() + platform.slice(1)}`;
+                    const qualityDisplay = finalQuality === 'audio' ? 'صوت MP3' : `${finalQuality}p`;
+                    
+                    setResult(`
+                        <div class="preview">
+                            <img src="https://picsum.photos/seed/${Date.now()}/100/100" alt="معاينة" />
+                            <div class="info">
+                                <strong><i class="fas fa-check-circle" style="color:#5fdf8f; margin-left:0.4rem;"></i> ${title}</strong>
+                                <small>
+                                    <i class="fas fa-${platform === 'youtube' ? 'play' : platform === 'instagram' ? 'camera' : 'music'}"></i>
+                                    ${platform.charAt(0).toUpperCase() + platform.slice(1)} 
+                                    | ${qualityDisplay} 
+                                    | ${finalFormat.toUpperCase()}
+                                </small>
+                                <div style="margin-top:0.6rem;">
+                                    <a href="${downloadUrl}" target="_blank" class="download-link" download>
+                                        <i class="fas fa-download"></i> تحميل ${finalFormat.toUpperCase()}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+                } catch (error) {
+                    setResult(`⚠️ ${error.message}`, true);
                 }
             });
 
-            downloadPngBtn.addEventListener('click', downloadPNG);
-            downloadHDPngBtn.addEventListener('click', downloadHD);
-            shareBtn.addEventListener('click', shareQR);
-            copyBtn.addEventListener('click', copyLink);
-            clearBtn.addEventListener('click', clearAll);
-            clearHistoryBtn.addEventListener('click', clearHistory);
-
-            // ===== تهيئة =====
-            initDB().then(() => {
-                console.log('🚀 DX QR Generator جاهز!');
-                console.log('📱 جودة عالية ' + QR_SIZE + '×' + QR_SIZE);
-            }).catch(() => {
-                loadHistoryFromLocal();
-                console.log('🔄 تم استخدام LocalStorage');
+            // ===== AUTO-SWITCH FORMAT WHEN QUALITY = AUDIO =====
+            qualitySelect.addEventListener('change', function() {
+                if (this.value === 'audio') {
+                    document.getElementById('mp3Toggle').checked = true;
+                } else {
+                    const format = getSelectedFormat();
+                    if (format !== 'mp3') {
+                        document.getElementById('mp4Toggle').checked = true;
+                    }
+                }
             });
 
-            // ===== رابط تلقائي =====
-            const params = new URLSearchParams(window.location.search);
-            const initialUrl = params.get('url');
-            if (initialUrl) {
-                urlInput.value = initialUrl;
-                setTimeout(() => {
-                    generateQR(initialUrl);
-                }, 400);
-            }
+            // ===== AUTO-SWITCH QUALITY WHEN FORMAT = MP3 =====
+            formatRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    if (this.value === 'mp3') {
+                        if (qualitySelect.value !== 'audio') {
+                            qualitySelect.value = 'audio';
+                            resultArea.innerHTML = `<span style="opacity:0.5;"><i class="fas fa-info-circle"></i> تم ضبط الجودة إلى "صوت MP3"</span>`;
+                        }
+                    } else {
+                        if (qualitySelect.value === 'audio') {
+                            qualitySelect.value = '720';
+                            resultArea.innerHTML = `<span style="opacity:0.5;"><i class="fas fa-info-circle"></i> تم ضبط الجودة إلى 720p</span>`;
+                        }
+                    }
+                });
+            });
 
-            console.log('✅ DX - النسخة النهائية جاهزة!');
+            // ===== INITIAL MESSAGE =====
+            setTimeout(() => {
+                resultArea.innerHTML = `<span style="opacity:0.4;"><i class="fas fa-arrow-left" style="margin-left:0.5rem;"></i> ألصق الرابط واضغط تحميل</span>`;
+            }, 300);
         })();
     </script>
-
 </body>
 </html>
