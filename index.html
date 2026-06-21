@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>QR Code Generator - احترافي</title>
+    <title>DX - QR Code Generator</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js">
     </script>
@@ -43,19 +43,47 @@
             margin-bottom: 24px;
         }
 
+        .header .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .header .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #f7971e, #ffd200);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 900;
+            color: #1a1a2e;
+            box-shadow: 0 8px 24px rgba(255, 210, 0, 0.25);
+        }
+
         .header h1 {
-            font-size: 28px;
-            font-weight: 700;
+            font-size: 32px;
+            font-weight: 800;
             background: linear-gradient(135deg, #f7971e, #ffd200);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            letter-spacing: -0.5px;
         }
 
-        .header p {
-            color: rgba(255, 255, 255, 0.4);
+        .header .subtitle {
+            color: rgba(255, 255, 255, 0.35);
             font-size: 13px;
             margin-top: 4px;
+            letter-spacing: 1px;
+        }
+
+        .header .subtitle span {
+            color: #ffd200;
+            -webkit-text-fill-color: #ffd200;
         }
 
         .input-group {
@@ -141,7 +169,7 @@
             box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
             max-width: 100%;
             height: auto;
-            image-rendering: pixelated;
+            image-rendering: auto;
         }
 
         #qrcode img {
@@ -237,6 +265,12 @@
             background: rgba(0, 200, 150, 0.1);
             border-color: rgba(0, 200, 150, 0.12);
             color: #5cd6b0;
+        }
+
+        .actions .btn-hd {
+            background: rgba(255, 100, 100, 0.1);
+            border-color: rgba(255, 100, 100, 0.12);
+            color: #ff8a8a;
         }
 
         .history-section {
@@ -354,6 +388,18 @@
             border-color: rgba(255, 80, 80, 0.25);
         }
 
+        .quality-badge {
+            display: inline-block;
+            background: rgba(255, 210, 0, 0.1);
+            border: 1px solid rgba(255, 210, 0, 0.15);
+            border-radius: 20px;
+            padding: 2px 12px;
+            font-size: 10px;
+            color: #ffd200;
+            margin-top: 6px;
+            letter-spacing: 0.5px;
+        }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -370,8 +416,13 @@
                 padding: 18px 14px;
                 border-radius: 24px;
             }
+            .header .logo-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
             .header h1 {
-                font-size: 22px;
+                font-size: 26px;
             }
             .input-group {
                 flex-direction: column;
@@ -393,9 +444,9 @@
                 font-size: 14px;
             }
             .actions button {
-                min-width: 60px;
-                font-size: 11px;
-                padding: 10px 8px;
+                min-width: 55px;
+                font-size: 10px;
+                padding: 10px 6px;
             }
             .qr-display {
                 padding: 12px;
@@ -406,7 +457,6 @@
             }
         }
 
-        /* دعم الشاشات الكبيرة */
         @media (min-width: 768px) {
             .container {
                 padding: 40px 38px;
@@ -418,8 +468,11 @@
 
     <div class="container">
         <div class="header">
-            <h1><i class="fas fa-qrcode" style="margin-left:10px;"></i> QR Craft</h1>
-            <p>أدخل الرابط ليتم تحويله إلى كود QR</p>
+            <div class="logo">
+                <div class="logo-icon">DX</div>
+                <h1>DX</h1>
+            </div>
+            <p class="subtitle">QR Code Generator <span>• عالي الجودة</span></p>
         </div>
 
         <div class="input-group">
@@ -436,6 +489,7 @@
                     <span>سيظهر الكود هنا</span>
                 </div>
             </div>
+            <div class="quality-badge" id="qualityBadge">🔹 جودة عالية 1024×1024</div>
             <div class="link-preview" id="linkPreview">
                 <i class="fas fa-link" style="margin-left:6px;opacity:0.3;"></i>
                 <span id="linkText">https://example.com</span>
@@ -445,6 +499,9 @@
         <div class="actions">
             <button class="btn-primary" id="downloadPngBtn">
                 <i class="fas fa-download"></i> PNG
+            </button>
+            <button class="btn-hd" id="downloadHDPngBtn">
+                <i class="fas fa-image"></i> HD
             </button>
             <button class="btn-svg" id="downloadSvgBtn">
                 <i class="fas fa-vector-square"></i> SVG
@@ -487,6 +544,7 @@
             const linkPreview = document.getElementById('linkPreview');
             const linkText = document.getElementById('linkText');
             const downloadPngBtn = document.getElementById('downloadPngBtn');
+            const downloadHDPngBtn = document.getElementById('downloadHDPngBtn');
             const downloadSvgBtn = document.getElementById('downloadSvgBtn');
             const shareBtn = document.getElementById('shareBtn');
             const copyBtn = document.getElementById('copyBtn');
@@ -494,13 +552,19 @@
             const historyList = document.getElementById('historyList');
             const clearHistoryBtn = document.getElementById('clearHistoryBtn');
             const toast = document.getElementById('toast');
+            const qualityBadge = document.getElementById('qualityBadge');
 
             let currentUrl = '';
             let currentCanvas = null;
+            let currentQrText = '';
             let history = [];
 
-            // ===== IndexedDB لحفظ التاريخ (حل دائم) =====
-            const DB_NAME = 'QRHistoryDB';
+            // ===== إعدادات الجودة العالية =====
+            const QR_SIZE = 1024; // دقة عالية جداً
+            const DISPLAY_SIZE = 280; // حجم العرض في الواجهة
+
+            // ===== IndexedDB =====
+            const DB_NAME = 'DX_QR_History';
             const STORE_NAME = 'history';
             let db = null;
 
@@ -510,7 +574,8 @@
                     request.onupgradeneeded = function(e) {
                         const db = e.target.result;
                         if (!db.objectStoreNames.contains(STORE_NAME)) {
-                            const store = db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
+                            const store = db.createObjectStore(STORE_NAME, { keyPath: 'id',
+                            autoIncrement: true });
                             store.createIndex('url', 'url', { unique: false });
                             store.createIndex('date', 'date', { unique: false });
                         }
@@ -559,7 +624,6 @@
                     const request = store.getAll();
                     request.onsuccess = function() {
                         const data = request.result || [];
-                        // ترتيب تنازلي حسب التاريخ
                         data.sort((a, b) => new Date(b.date) - new Date(a.date));
                         resolve(data);
                     };
@@ -580,7 +644,6 @@
                 });
             }
 
-            // ===== تحميل وتهيئة =====
             async function initDB() {
                 try {
                     await openDB();
@@ -593,10 +656,9 @@
                 }
             }
 
-            // ===== LocalStorage كحل بديل =====
             function loadHistoryFromLocal() {
                 try {
-                    const stored = localStorage.getItem('qr_history');
+                    const stored = localStorage.getItem('dx_qr_history');
                     if (stored) {
                         history = JSON.parse(stored);
                         if (!Array.isArray(history)) history = [];
@@ -605,31 +667,21 @@
                 renderHistory();
             }
 
-            function saveHistoryToLocal() {
-                try {
-                    localStorage.setItem('qr_history', JSON.stringify(history));
-                } catch (_) {}
-                renderHistory();
-            }
-
-            // ===== حفظ التاريخ (ذكي) =====
             async function saveHistory() {
                 try {
                     if (db) {
                         await saveHistoryToDB(history);
                     } else {
-                        saveHistoryToLocal();
+                        localStorage.setItem('dx_qr_history', JSON.stringify(history));
                     }
                 } catch (e) {
-                    saveHistoryToLocal();
+                    localStorage.setItem('dx_qr_history', JSON.stringify(history));
                 }
                 renderHistory();
             }
 
-            // ===== إضافة رابط إلى التاريخ =====
             async function addToHistory(url) {
                 if (!url || url.trim() === '') return;
-                // إزالة المكرر
                 history = history.filter(item => item.url !== url);
                 history.unshift({
                     url: url,
@@ -639,7 +691,6 @@
                 await saveHistory();
             }
 
-            // ===== عرض التاريخ =====
             function renderHistory() {
                 if (!history || history.length === 0) {
                     historyList.innerHTML =
@@ -664,13 +715,9 @@
                         urlInput.value = url;
                         generateQR(url);
                     });
-                    el.addEventListener('touchend', function(e) {
-                        // منع التداخل مع النقر العادي
-                    });
                 });
             }
 
-            // ===== مسح التاريخ =====
             async function clearHistory() {
                 if (!history || history.length === 0) return;
                 history = [];
@@ -678,14 +725,14 @@
                     if (db) {
                         await deleteHistoryFromDB();
                     } else {
-                        localStorage.removeItem('qr_history');
+                        localStorage.removeItem('dx_qr_history');
                     }
-                } catch (_) { localStorage.removeItem('qr_history'); }
+                } catch (_) { localStorage.removeItem('dx_qr_history'); }
                 renderHistory();
                 showToast('🗑️ تم مسح السجل', 'success');
             }
 
-            // ===== إنشاء QR =====
+            // ===== إنشاء QR بجودة عالية =====
             function generateQR(url) {
                 if (!url || url.trim() === '') {
                     showToast('⚠️ الرجاء إدخال رابط', 'error');
@@ -698,16 +745,17 @@
                 }
 
                 currentUrl = finalUrl;
+                currentQrText = finalUrl;
 
                 // مسح المحتوى السابق
                 qrContainer.innerHTML = '';
                 qrDisplay.classList.add('has-qr');
 
-                // إنشاء QR جديد
-                new QRCode(qrContainer, {
+                // إنشاء QR بدقة عالية جداً
+                const qrCode = new QRCode(qrContainer, {
                     text: finalUrl,
-                    width: 250,
-                    height: 250,
+                    width: QR_SIZE,
+                    height: QR_SIZE,
                     colorDark: '#ffffff',
                     colorLight: 'transparent',
                     correctLevel: QRCode.CorrectLevel.H
@@ -717,25 +765,92 @@
                 linkText.textContent = finalUrl;
                 linkPreview.classList.add('show');
 
-                // حفظ Canvas
+                // حفظ Canvas بعد اكتمال الرسم
                 setTimeout(() => {
                     const canvas = qrContainer.querySelector('canvas');
                     if (canvas) {
+                        // تحسين جودة الصورة
+                        canvas.style.width = DISPLAY_SIZE + 'px';
+                        canvas.style.height = DISPLAY_SIZE + 'px';
+                        canvas.style.imageRendering = 'auto';
                         currentCanvas = canvas;
+                        qualityBadge.textContent = '🔹 جودة عالية ' + QR_SIZE + '×' + QR_SIZE;
                     }
-                }, 150);
+                }, 200);
 
-                // إضافة إلى التاريخ
                 addToHistory(finalUrl);
-                showToast('✅ تم إنشاء الـ QR', 'success');
+                showToast('✅ تم إنشاء QR عالي الجودة', 'success');
             }
 
-            // ===== تحميل PNG (الحل النهائي) =====
-            function downloadPNG() {
-                // البحث عن canvas بأي طريقة
+            // ===== تحميل PNG عالي الجودة =====
+            function downloadHD() {
                 let canvas = qrContainer.querySelector('canvas');
                 if (!canvas) {
-                    // محاولة البحث مرة أخرى بعد تأخير
+                    setTimeout(() => {
+                        canvas = qrContainer.querySelector('canvas');
+                        if (canvas) {
+                            performDownloadHD(canvas);
+                        } else {
+                            showToast('⚠️ انتظر حتى يظهر الـ QR', 'error');
+                        }
+                    }, 300);
+                    return;
+                }
+                performDownloadHD(canvas);
+            }
+
+            function performDownloadHD(canvas) {
+                try {
+                    // نستخدم toBlob مع جودة عالية
+                    if (canvas.toBlob) {
+                        canvas.toBlob(function(blob) {
+                            if (!blob) {
+                                fallbackDownloadHD(canvas);
+                                return;
+                            }
+                            const link = document.createElement('a');
+                            link.download = `DX_QR_${Date.now()}.png`;
+                            link.href = URL.createObjectURL(blob);
+                            document.body.appendChild(link);
+                            link.click();
+                            setTimeout(() => {
+                                document.body.removeChild(link);
+                                URL.revokeObjectURL(link.href);
+                            }, 100);
+                            showToast('✅ تم تحميل PNG عالي الجودة', 'success');
+                        }, 'image/png', 1.0);
+                    } else {
+                        fallbackDownloadHD(canvas);
+                    }
+                } catch (error) {
+                    fallbackDownloadHD(canvas);
+                }
+            }
+
+            function fallbackDownloadHD(canvas) {
+                try {
+                    const dataUrl = canvas.toDataURL('image/png');
+                    const link = document.createElement('a');
+                    link.download = `DX_QR_${Date.now()}.png`;
+                    link.href = dataUrl;
+                    link.style.display = 'none';
+                    document.body.appendChild(link);
+                    setTimeout(() => {
+                        link.click();
+                        setTimeout(() => {
+                            document.body.removeChild(link);
+                        }, 200);
+                    }, 50);
+                    showToast('✅ تم تحميل PNG عالي الجودة', 'success');
+                } catch (error) {
+                    showToast('⚠️ فشل التحميل، حاول مرة أخرى', 'error');
+                }
+            }
+
+            // ===== تحميل PNG عادي (بحجم العرض) =====
+            function downloadPNG() {
+                let canvas = qrContainer.querySelector('canvas');
+                if (!canvas) {
                     setTimeout(() => {
                         canvas = qrContainer.querySelector('canvas');
                         if (canvas) {
@@ -751,77 +866,42 @@
 
             function performDownloadPNG(canvas) {
                 try {
-                    // === الطريقة الأولى: toBlob (الأفضل) ===
-                    if (canvas.toBlob) {
-                        canvas.toBlob(function(blob) {
-                            if (!blob) {
-                                // فشل toBlob، نستخدم الطريقة البديلة
-                                fallbackDownloadPNG(canvas);
-                                return;
-                            }
+                    // ننشئ Canvas جديد بحجم أصغر للتحميل السريع
+                    const tempCanvas = document.createElement('canvas');
+                    const size = 512;
+                    tempCanvas.width = size;
+                    tempCanvas.height = size;
+                    const ctx = tempCanvas.getContext('2d');
+                    ctx.imageSmoothingEnabled = true;
+                    ctx.imageSmoothingQuality = 'high';
+                    ctx.drawImage(canvas, 0, 0, size, size);
+
+                    tempCanvas.toBlob(function(blob) {
+                        if (!blob) {
+                            const dataUrl = tempCanvas.toDataURL('image/png');
                             const link = document.createElement('a');
-                            link.download = `QR_${Date.now()}.png`;
-                            link.href = URL.createObjectURL(blob);
+                            link.download = `DX_QR_${Date.now()}.png`;
+                            link.href = dataUrl;
                             document.body.appendChild(link);
                             link.click();
-                            setTimeout(() => {
-                                document.body.removeChild(link);
-                                URL.revokeObjectURL(link.href);
-                            }, 100);
+                            setTimeout(() => document.body.removeChild(link), 100);
                             showToast('✅ تم تحميل PNG', 'success');
-                        }, 'image/png', 1.0);
-                    } else {
-                        fallbackDownloadPNG(canvas);
-                    }
-                } catch (error) {
-                    fallbackDownloadPNG(canvas);
-                }
-            }
-
-            // === الطريقة البديلة (للهواتف القديمة) ===
-            function fallbackDownloadPNG(canvas) {
-                try {
-                    const dataUrl = canvas.toDataURL('image/png');
-                    // نستخدم الطريقة القديمة ولكن مع تحسين للهواتف
-                    if (navigator.msSaveBlob) {
-                        // Internet Explorer / Edge القديم
-                        const blob = dataURLToBlob(dataUrl);
-                        navigator.msSaveBlob(blob, `QR_${Date.now()}.png`);
-                        showToast('✅ تم تحميل PNG', 'success');
-                        return;
-                    }
-
-                    // طريقة حديثة تعمل على الهواتف
-                    const link = document.createElement('a');
-                    link.download = `QR_${Date.now()}.png`;
-                    link.href = dataUrl;
-                    link.style.display = 'none';
-                    document.body.appendChild(link);
-                    // نستخدم click() مع setTimeout لضمان العمل
-                    setTimeout(() => {
+                            return;
+                        }
+                        const link = document.createElement('a');
+                        link.download = `DX_QR_${Date.now()}.png`;
+                        link.href = URL.createObjectURL(blob);
+                        document.body.appendChild(link);
                         link.click();
                         setTimeout(() => {
                             document.body.removeChild(link);
-                        }, 200);
-                    }, 50);
-                    showToast('✅ تم تحميل PNG', 'success');
+                            URL.revokeObjectURL(link.href);
+                        }, 100);
+                        showToast('✅ تم تحميل PNG', 'success');
+                    }, 'image/png', 1.0);
                 } catch (error) {
-                    showToast('⚠️ فشل التحميل، حاول مرة أخرى', 'error');
-                    console.error('Download error:', error);
+                    showToast('⚠️ فشل التحميل', 'error');
                 }
-            }
-
-            // ===== تحويل dataURL إلى Blob =====
-            function dataURLToBlob(dataURL) {
-                const parts = dataURL.split(',');
-                const mime = parts[0].match(/:(.*?);/)[1];
-                const bstr = atob(parts[1]);
-                const n = bstr.length;
-                const u8arr = new Uint8Array(n);
-                for (let i = 0; i < n; i++) {
-                    u8arr[i] = bstr.charCodeAt(i);
-                }
-                return new Blob([u8arr], { type: mime });
             }
 
             // ===== تحميل SVG =====
@@ -849,13 +929,13 @@
                     const imageData = ctx.getImageData(0, 0, width, height);
                     const data = imageData.data;
 
-                    let svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}">`;
+                    let svg =
+                        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}">`;
                     svg += `<rect width="100%" height="100%" fill="transparent"/>`;
 
-                    // تحديد حجم الخلية
                     let moduleSize = 2;
-                    for (let y = 0; y < height; y += 4) {
-                        for (let x = 0; x < width; x += 4) {
+                    for (let y = 0; y < height; y += 8) {
+                        for (let x = 0; x < width; x += 8) {
                             const idx = (y * width + x) * 4;
                             if (data[idx] < 128 && data[idx + 1] < 128 && data[idx + 2] < 128) {
                                 let size = 1;
@@ -886,7 +966,7 @@
 
                     const blob = new Blob([svg], { type: 'image/svg+xml' });
                     const link = document.createElement('a');
-                    link.download = `QR_${Date.now()}.svg`;
+                    link.download = `DX_QR_${Date.now()}.svg`;
                     link.href = URL.createObjectURL(blob);
                     document.body.appendChild(link);
                     link.click();
@@ -896,11 +976,11 @@
                     }, 100);
                     showToast('✅ تم تحميل SVG', 'success');
                 } catch (error) {
-                    showToast('⚠️ فشل تحميل SVG، جرب PNG', 'error');
+                    showToast('⚠️ فشل تحميل SVG', 'error');
                 }
             }
 
-            // ===== مشاركة QR (للهواتف) =====
+            // ===== مشاركة =====
             function shareQR() {
                 let canvas = qrContainer.querySelector('canvas');
                 if (!canvas) {
@@ -914,20 +994,19 @@
                             showToast('⚠️ لا يمكن مشاركة الصورة', 'error');
                             return;
                         }
-                        const file = new File([blob], `QR_${Date.now()}.png`, { type: 'image/png' });
+                        const file = new File([blob], `DX_QR_${Date.now()}.png`, { type: 'image/png' });
                         navigator.share({
-                            title: 'QR Code',
+                            title: 'DX QR Code',
                             text: currentUrl || 'QR Code',
                             files: [file]
                         }).catch(() => {});
                     }, 'image/png');
                 } else {
-                    // إذا لم توجد ميزة المشاركة، نقوم بالتحميل
                     downloadPNG();
                 }
             }
 
-            // ===== نسخ الرابط =====
+            // ===== نسخ =====
             function copyLink() {
                 if (!currentUrl) {
                     showToast('⚠️ لا يوجد رابط لنسخه', 'error');
@@ -956,7 +1035,7 @@
                     document.execCommand('copy');
                     showToast('📋 تم نسخ الرابط', 'success');
                 } catch (_) {
-                    showToast('⚠️ لم يتم النسخ، حاول يدوياً', 'error');
+                    showToast('⚠️ لم يتم النسخ', 'error');
                 }
                 document.body.removeChild(textArea);
             }
@@ -972,6 +1051,7 @@
                 linkPreview.classList.remove('show');
                 currentUrl = '';
                 currentCanvas = null;
+                qualityBadge.textContent = '🔹 جودة عالية 1024×1024';
                 showToast('🗑️ تم المسح', 'success');
             }
 
@@ -1004,47 +1084,34 @@
                 }
             });
 
-            // تحسين للهواتف: عند اللصق التلقائي
-            urlInput.addEventListener('input', function() {
-                // لا نقوم بتوليد تلقائي لتجنب الإزعاج
-            });
-
-            // تحسين: عند تغيير الحقل والضغط على إنشاء
             downloadPngBtn.addEventListener('click', downloadPNG);
+            downloadHDPngBtn.addEventListener('click', downloadHD);
             downloadSvgBtn.addEventListener('click', downloadSVG);
             shareBtn.addEventListener('click', shareQR);
             copyBtn.addEventListener('click', copyLink);
             clearBtn.addEventListener('click', clearAll);
             clearHistoryBtn.addEventListener('click', clearHistory);
 
-            // ===== تحميل التاريخ عند بدء التشغيل =====
+            // ===== تهيئة =====
             initDB().then(() => {
-                console.log('🚀 QR Craft جاهز!');
-                console.log('💡 استخدم ?url=example.com للتوليد التلقائي');
+                console.log('🚀 DX QR Generator جاهز!');
+                console.log('📱 جودة عالية ' + QR_SIZE + '×' + QR_SIZE);
             }).catch(() => {
                 loadHistoryFromLocal();
-                console.log('🔄 تم استخدام LocalStorage كحل بديل');
+                console.log('🔄 تم استخدام LocalStorage');
             });
 
-            // ===== رابط تلقائي من URL =====
+            // ===== رابط تلقائي =====
             const params = new URLSearchParams(window.location.search);
             const initialUrl = params.get('url');
             if (initialUrl) {
                 urlInput.value = initialUrl;
                 setTimeout(() => {
                     generateQR(initialUrl);
-                }, 300);
+                }, 400);
             }
 
-            // ===== معالجة أخطاء التحميل على الهواتف =====
-            // نضيف مستمع لأزرار التحميل لمنع السلوك الافتراضي
-            document.querySelectorAll('.actions button').forEach(btn => {
-                btn.addEventListener('touchstart', function(e) {
-                    // نمنع التمرير أو التكبير عند الضغط
-                }, { passive: true });
-            });
-
-            console.log('📱 تم تحسين التطبيق للهواتف بالكامل');
+            console.log('✅ DX - عالي الجودة جاهز للنشر!');
         })();
     </script>
 
