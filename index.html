@@ -1,262 +1,753 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smart Auto Responder</title>
-  <style>
-    /* ── reset & base ── */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    }
-    body {
-      width: 360px;
-      background: #f8fafc;
-      padding: 20px 18px 24px;
-      color: #0b1b2b;
-    }
-    .container {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-    /* ── header ── */
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid #e9edf2;
-      padding-bottom: 12px;
-    }
-    .header h1 {
-      font-size: 20px;
-      font-weight: 600;
-      letter-spacing: -0.01em;
-      background: linear-gradient(145deg, #0f2b3d, #1d4a6b);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .badge {
-      background: #eef2f6;
-      padding: 4px 12px;
-      border-radius: 30px;
-      font-size: 11px;
-      font-weight: 500;
-      color: #1f3a54;
-    }
-    /* ── toggle card ── */
-    .toggle-card {
-      background: white;
-      border-radius: 20px;
-      padding: 16px 18px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.02), 0 1px 2px rgba(0,0,0,0.05);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border: 1px solid #eef2f6;
-    }
-    .toggle-label {
-      font-weight: 500;
-      font-size: 15px;
-    }
-    .toggle-label small {
-      display: block;
-      font-weight: 400;
-      font-size: 12px;
-      color: #5f6f82;
-      margin-top: 2px;
-    }
-    /* toggle switch */
-    .switch {
-      position: relative;
-      width: 44px;
-      height: 26px;
-      flex-shrink: 0;
-      background: #d0d8e0;
-      border-radius: 40px;
-      transition: background 0.2s;
-      cursor: pointer;
-      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
-    }
-    .switch.active {
-      background: #1d6f9c;
-    }
-    .switch .knob {
-      position: absolute;
-      top: 3px;
-      left: 3px;
-      width: 20px;
-      height: 20px;
-      background: white;
-      border-radius: 50%;
-      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-    }
-    .switch.active .knob {
-      transform: translateX(18px);
-    }
-    /* ── input field ── */
-    .input-group {
-      background: white;
-      border-radius: 20px;
-      padding: 6px 6px 6px 18px;
-      border: 1px solid #e2e8f0;
-      display: flex;
-      align-items: center;
-      transition: border 0.15s;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-    }
-    .input-group:focus-within {
-      border-color: #1d6f9c;
-      box-shadow: 0 0 0 3px rgba(29,111,156,0.08);
-    }
-    .input-group input {
-      flex: 1;
-      border: none;
-      padding: 12px 0;
-      font-size: 14px;
-      background: transparent;
-      outline: none;
-      color: #0b1b2b;
-    }
-    .input-group input::placeholder {
-      color: #9aabbb;
-      font-weight: 400;
-    }
-    .input-group button {
-      background: #1d6f9c;
-      border: none;
-      color: white;
-      font-weight: 500;
-      font-size: 13px;
-      padding: 8px 16px;
-      border-radius: 40px;
-      cursor: pointer;
-      transition: background 0.15s;
-      white-space: nowrap;
-    }
-    .input-group button:hover {
-      background: #155a7e;
-    }
-    .input-group button:active {
-      transform: scale(0.97);
-    }
-    /* ── checkbox row ── */
-    .option-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: white;
-      padding: 12px 18px;
-      border-radius: 20px;
-      border: 1px solid #eef2f6;
-    }
-    .option-row input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
-      accent-color: #1d6f9c;
-      cursor: pointer;
-    }
-    .option-row label {
-      font-size: 14px;
-      font-weight: 450;
-      color: #1e3447;
-      cursor: pointer;
-    }
-    .option-row .hint {
-      margin-left: auto;
-      font-size: 12px;
-      color: #7d8d9e;
-    }
-    /* ── status footer ── */
-    .status {
-      margin-top: 8px;
-      display: flex;
-      justify-content: space-between;
-      font-size: 13px;
-      color: #2e4b66;
-      background: #eef4f9;
-      padding: 10px 16px;
-      border-radius: 40px;
-      border: 1px solid #dfe7ef;
-    }
-    .status span:last-child {
-      font-weight: 500;
-      color: #0f2b3d;
-    }
-    .status .dot {
-      display: inline-block;
-      width: 10px;
-      height: 10px;
-      border-radius: 10px;
-      margin-right: 6px;
-      background: #8b9aab;
-    }
-    .status .dot.on {
-      background: #1d9c6f;
-      box-shadow: 0 0 6px #1d9c6f88;
-    }
-    .clear-btn {
-      background: none;
-      border: none;
-      color: #5f6f82;
-      font-size: 12px;
-      text-decoration: underline dotted;
-      cursor: pointer;
-      padding: 0 4px;
-    }
-    .clear-btn:hover {
-      color: #b13e3e;
-    }
-    hr {
-      border: none;
-      border-top: 1px solid #e2e8f0;
-      margin: 4px 0 0;
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Auto Responder</title>
+    <style>
+        /* ====== كل التنسيقات ====== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            width: 400px;
+            padding: 20px;
+            background: #f0f4f8;
+            min-height: 400px;
+        }
+        .container {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        h1 {
+            font-size: 24px;
+            color: #1a2a3a;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        h1 small {
+            font-size: 12px;
+            background: #e8edf2;
+            padding: 2px 12px;
+            border-radius: 20px;
+            color: #4a5a6a;
+            font-weight: 400;
+        }
+        .toggle-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f7f9fc;
+            padding: 14px 18px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e8edf2;
+        }
+        .toggle-label {
+            font-weight: 600;
+            color: #1a2a3a;
+        }
+        .toggle-label span {
+            display: block;
+            font-weight: 400;
+            font-size: 12px;
+            color: #6a7a8a;
+            margin-top: 2px;
+        }
+        .switch {
+            position: relative;
+            width: 50px;
+            height: 28px;
+            background: #ccd5e0;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: 0.3s;
+            flex-shrink: 0;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .switch.active {
+            background: #2d7d9e;
+        }
+        .switch .knob {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+        .switch.active .knob {
+            transform: translateX(22px);
+        }
+        .input-group {
+            margin: 16px 0 18px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a2a3a;
+            margin-bottom: 6px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid #dce3ea;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: 0.2s;
+            background: #fafbfc;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #2d7d9e;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(45, 125, 158, 0.1);
+        }
+        .input-group button {
+            margin-top: 8px;
+            background: #2d7d9e;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+            font-size: 13px;
+        }
+        .input-group button:hover {
+            background: #1d6a8a;
+            transform: scale(1.02);
+        }
+        .input-group button:active {
+            transform: scale(0.98);
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 14px 0 18px;
+            padding: 12px 0;
+            border-top: 1px solid #e8edf2;
+            border-bottom: 1px solid #e8edf2;
+        }
+        .checkbox-group input {
+            width: 18px;
+            height: 18px;
+            accent-color: #2d7d9e;
+            cursor: pointer;
+        }
+        .checkbox-group label {
+            font-size: 14px;
+            color: #1a2a3a;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .status-bar {
+            background: #f7f9fc;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-top: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            border: 1px solid #e8edf2;
+        }
+        .status-bar .dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 6px;
+            transition: 0.3s;
+        }
+        .dot.on {
+            background: #2d9e6f;
+            box-shadow: 0 0 8px rgba(45, 158, 111, 0.3);
+        }
+        .dot.off {
+            background: #aab;
+        }
+        .status-bar .clear-btn {
+            background: none;
+            border: none;
+            color: #c0392b;
+            font-size: 12px;
+            text-decoration: underline;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: 0.2s;
+        }
+        .status-bar .clear-btn:hover {
+            background: #fee;
+            color: #e74c3c;
+        }
+        #saveMsgBtn {
+            width: 100%;
+            margin-top: 6px;
+        }
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a2a3a;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 13px;
+            opacity: 0;
+            transition: 0.3s;
+            pointer-events: none;
+            z-index: 999;
+        }
+        .toast.show {
+            opacity: 1;
+        }
+        .footer-note {
+            margin-top: 16px;
+            font-size: 11px;
+            color: #8a9aaa;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-<div class="container" id="app">
-  <div class="header">
-    <h1>⚡ Smart Responder</h1>
-    <span class="badge">v1.0</span>
-  </div>
 
-  <!-- toggle -->
-  <div class="toggle-card">
-    <div class="toggle-label">
-      Auto-reply
-      <small>respond to new messages</small>
+    <div class="container">
+        <h1>
+            🤖 Smart Auto Responder
+            <small>v1.0</small>
+        </h1>
+
+        <!-- Toggle -->
+        <div class="toggle-container">
+            <div class="toggle-label">
+                تفعيل الرد التلقائي
+                <span>يتم الرد على الرسائل الجديدة</span>
+            </div>
+            <div class="switch" id="toggleSwitch">
+                <div class="knob"></div>
+            </div>
+        </div>
+
+        <!-- Reply message -->
+        <div class="input-group">
+            <label>📝 نص الرد التلقائي</label>
+            <input type="text" id="replyMessage" placeholder="أدخل نص الرد..." value="شكراً لتواصلك! سأرد عليك قريباً." />
+            <button id="saveMsgBtn">💾 حفظ النص</button>
+        </div>
+
+        <!-- Only once option -->
+        <div class="checkbox-group">
+            <input type="checkbox" id="onlyOnceCheck" />
+            <label for="onlyOnceCheck">🔁 الرد مرة واحدة فقط لكل مستخدم</label>
+        </div>
+
+        <!-- Status -->
+        <div class="status-bar">
+            <span>
+                <span class="dot off" id="statusDot"></span>
+                <span id="statusText">غير مفعل</span>
+            </span>
+            <span>👥 تم الرد على <span id="userCount">0</span> مستخدم</span>
+            <button class="clear-btn" id="clearHistoryBtn">🗑️ مسح السجل</button>
+        </div>
+
+        <div class="footer-note">✅ يعمل على جميع مواقع الدردشة</div>
     </div>
-    <div class="switch" id="toggleSwitch" role="button" tabindex="0" aria-label="Toggle auto-reply">
-      <div class="knob"></div>
-    </div>
-  </div>
 
-  <!-- message input -->
-  <div class="input-group">
-    <input type="text" id="replyMessage" placeholder="Type your auto-reply…" value="Thanks for your message! I'll get back to you soon.">
-    <button id="saveMsgBtn">Save</button>
-  </div>
+    <div class="toast" id="toast"></div>
 
-  <!-- options -->
-  <div class="option-row">
-    <input type="checkbox" id="onlyOnceCheck">
-    <label for="onlyOnceCheck">🔁 Only reply once per user</label>
-    <span class="hint">per session</span>
-  </div>
+    <script>
+        // ============================================================
+        // ===== كل الكود البرمجي (popup.js + content.js + background) =====
+        // ============================================================
 
-  <!-- status -->
-  <div class="status">
-    <span><span class="dot" id="statusDot"></span><span id="statusText">Inactive</span></span>
-    <span>👥 <span id="userCount">0</span> users</span>
-    <button class="clear-btn" id="clearHistoryBtn">clear history</button>
-  </div>
-</div>
-<script src="popup.js"></script>
+        // -------- popup.js (التحكم في الواجهة) --------
+        (function popup() {
+            const toggleSwitch = document.getElementById('toggleSwitch');
+            const replyMessageInput = document.getElementById('replyMessage');
+            const saveMsgBtn = document.getElementById('saveMsgBtn');
+            const onlyOnceCheck = document.getElementById('onlyOnceCheck');
+            const statusText = document.getElementById('statusText');
+            const statusDot = document.getElementById('statusDot');
+            const userCount = document.getElementById('userCount');
+            const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+            const toast = document.getElementById('toast');
+
+            let toastTimer = null;
+
+            function showToast(msg) {
+                toast.textContent = msg;
+                toast.classList.add('show');
+                clearTimeout(toastTimer);
+                toastTimer = setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 2000);
+            }
+
+            // تحميل الإعدادات
+            async function loadSettings() {
+                try {
+                    const data = await chrome.storage.local.get([
+                        'enabled', 'replyMessage', 'onlyOnce', 'repliedUsers'
+                    ]);
+
+                    if (data.enabled) {
+                        toggleSwitch.classList.add('active');
+                        statusText.textContent = 'مفعل';
+                        statusDot.className = 'dot on';
+                    } else {
+                        toggleSwitch.classList.remove('active');
+                        statusText.textContent = 'غير مفعل';
+                        statusDot.className = 'dot off';
+                    }
+
+                    if (data.replyMessage) {
+                        replyMessageInput.value = data.replyMessage;
+                    }
+
+                    onlyOnceCheck.checked = data.onlyOnce || false;
+
+                    const users = data.repliedUsers || [];
+                    userCount.textContent = users.length;
+                } catch (e) {
+                    console.error('خطأ في تحميل الإعدادات:', e);
+                }
+            }
+
+            // حفظ الإعدادات
+            async function saveSettings() {
+                try {
+                    const enabled = toggleSwitch.classList.contains('active');
+                    const replyMessage = replyMessageInput.value.trim() || 'شكراً لتواصلك! سأرد عليك قريباً.';
+                    const onlyOnce = onlyOnceCheck.checked;
+
+                    const data = await chrome.storage.local.get(['repliedUsers']);
+                    const repliedUsers = data.repliedUsers || [];
+
+                    await chrome.storage.local.set({
+                        enabled,
+                        replyMessage,
+                        onlyOnce,
+                        repliedUsers
+                    });
+
+                    // إرسال تحديث إلى content script
+                    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+                    if (tabs[0] && tabs[0].id) {
+                        try {
+                            await chrome.tabs.sendMessage(tabs[0].id, {
+                                type: 'SETTINGS_UPDATED',
+                                data: { enabled, replyMessage, onlyOnce, repliedUsers }
+                            });
+                        } catch (e) {
+                            // تجاهل إذا لم يكن content script جاهزاً
+                        }
+                    }
+
+                    showToast('✅ تم حفظ الإعدادات');
+                    loadSettings();
+                } catch (e) {
+                    console.error('خطأ في حفظ الإعدادات:', e);
+                    showToast('❌ حدث خطأ في الحفظ');
+                }
+            }
+
+            // تبديل حالة التشغيل
+            toggleSwitch.addEventListener('click', async () => {
+                toggleSwitch.classList.toggle('active');
+                await saveSettings();
+            });
+
+            // حفظ نص الرد
+            saveMsgBtn.addEventListener('click', saveSettings);
+
+            // تغيير خيار "مرة واحدة"
+            onlyOnceCheck.addEventListener('change', saveSettings);
+
+            // مسح سجل المستخدمين
+            clearHistoryBtn.addEventListener('click', async () => {
+                if (confirm('هل أنت متأكد من مسح سجل المستخدمين؟')) {
+                    await chrome.storage.local.set({ repliedUsers: [] });
+                    showToast('🗑️ تم مسح السجل');
+                    loadSettings();
+                }
+            });
+
+            // تحميل الإعدادات عند الفتح
+            document.addEventListener('DOMContentLoaded', loadSettings);
+
+            // الاستماع لتغييرات التخزين
+            chrome.storage.onChanged.addListener((changes, namespace) => {
+                if (namespace === 'local') {
+                    loadSettings();
+                }
+            });
+
+            // تصدير الوظائف للاستخدام من content script
+            window.popupAPI = { loadSettings, saveSettings };
+        })();
+
+        // -------- content.js (كشف الرسائل والرد) --------
+        (function content() {
+            // منع التنفيذ المتكرر
+            if (window._autoResponderLoaded) return;
+            window._autoResponderLoaded = true;
+
+            let settings = {
+                enabled: false,
+                replyMessage: 'شكراً لتواصلك! سأرد عليك قريباً.',
+                onlyOnce: false,
+                repliedUsers: []
+            };
+
+            let isProcessing = false;
+
+            // تحميل الإعدادات
+            async function loadSettings() {
+                try {
+                    const data = await chrome.storage.local.get([
+                        'enabled', 'replyMessage', 'onlyOnce', 'repliedUsers'
+                    ]);
+                    settings.enabled = data.enabled || false;
+                    settings.replyMessage = data.replyMessage || 'شكراً لتواصلك! سأرد عليك قريباً.';
+                    settings.onlyOnce = data.onlyOnce || false;
+                    settings.repliedUsers = data.repliedUsers || [];
+                } catch (e) {
+                    console.error('خطأ في تحميل الإعدادات من content:', e);
+                }
+            }
+
+            // حفظ المستخدمين
+            async function saveRepliedUsers() {
+                try {
+                    await chrome.storage.local.set({ repliedUsers: settings.repliedUsers });
+                } catch (e) {
+                    console.error('خطأ في حفظ المستخدمين:', e);
+                }
+            }
+
+            // البحث عن حقل الإدخال
+            function findInputField() {
+                const selectors = [
+                    'textarea',
+                    'input[type="text"]',
+                    'input[type="search"]',
+                    'div[contenteditable="true"]',
+                    '[role="textbox"]',
+                    '.message-input',
+                    '.chat-input',
+                    '#message-input',
+                    '#chat-input',
+                    '.input-message',
+                    '[data-testid="conversation-compose-box-input"]',
+                    '[contenteditable="true"]'
+                ];
+
+                for (const selector of selectors) {
+                    try {
+                        const elements = document.querySelectorAll(selector);
+                        for (const el of elements) {
+                            if (el.offsetParent !== null) {
+                                return el;
+                            }
+                        }
+                    } catch (e) { /* تجاهل */ }
+                }
+
+                // البحث العام
+                const inputs = document.querySelectorAll('input, textarea, [contenteditable="true"]');
+                for (const input of inputs) {
+                    if (input.offsetParent !== null) {
+                        const type = input.getAttribute('type');
+                        if (!type || type === 'text' || type === 'search' || type === 'email') {
+                            return input;
+                        }
+                        if (input.tagName === 'TEXTAREA' || input.getAttribute('contenteditable') === 'true') {
+                            return input;
+                        }
+                    }
+                }
+                return null;
+            }
+
+            // البحث عن زر الإرسال
+            function findSendButton() {
+                const selectors = [
+                    'button[type="submit"]',
+                    '.send-button',
+                    '.chat-send',
+                    '#send-button',
+                    '[aria-label*="send" i]',
+                    '[aria-label*="إرسال"]',
+                    '[data-testid="compose-btn-send"]',
+                    'button:has(svg)'
+                ];
+
+                for (const selector of selectors) {
+                    try {
+                        const elements = document.querySelectorAll(selector);
+                        for (const el of elements) {
+                            if (el.offsetParent !== null) {
+                                return el;
+                            }
+                        }
+                    } catch (e) { /* تجاهل */ }
+                }
+
+                // البحث عن أي زر يحتوي على كلمات مفتاحية
+                const buttons = document.querySelectorAll('button');
+                for (const btn of buttons) {
+                    if (btn.offsetParent === null) continue;
+                    const text = (btn.textContent || '').toLowerCase();
+                    const aria = (btn.getAttribute('aria-label') || '').toLowerCase();
+                    if (text.includes('send') || text.includes('إرسال') || text.includes('ارسال') ||
+                        aria.includes('send') || aria.includes('إرسال')) {
+                        return btn;
+                    }
+                }
+                return null;
+            }
+
+            // استخراج اسم المرسل
+            function extractSender(messageElement) {
+                const selectors = [
+                    '.sender-name', '.username', '.author', '.from',
+                    '[data-author]', '[data-user]', '.message-author',
+                    '.chat-user-name', '.name', '.user-name', '.display-name'
+                ];
+
+                for (const selector of selectors) {
+                    try {
+                        const el = messageElement.querySelector(selector);
+                        if (el && el.textContent.trim()) {
+                            return el.textContent.trim();
+                        }
+                    } catch (e) { /* تجاهل */ }
+                }
+
+                // محاولة استخراج من النص
+                const children = messageElement.children;
+                for (const child of children) {
+                    if (child.textContent.trim() && child.textContent.trim().length < 30) {
+                        return child.textContent.trim();
+                    }
+                }
+
+                // استخدام معرف فريد
+                const id = messageElement.getAttribute('data-user-id') ||
+                    messageElement.getAttribute('data-author') ||
+                    messageElement.id;
+                if (id) return id;
+
+                return 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+            }
+
+            // التحقق من أن الرسالة جديدة
+            function isNewMessage(messageElement) {
+                // تم الرد عليها مسبقاً
+                if (messageElement.querySelector('.auto-replied, [data-replied="true"]')) {
+                    return false;
+                }
+
+                // رسالة من المستخدم نفسه
+                if (messageElement.closest('.own-message, .message-out, .outgoing, [data-own="true"]')) {
+                    return false;
+                }
+
+                // تجنب الرسائل القديمة
+                if (messageElement.getAttribute('data-old') === 'true') {
+                    return false;
+                }
+
+                return true;
+            }
+
+            // إرسال الرد
+            async function sendReply(messageElement) {
+                if (isProcessing) return;
+                if (!settings.enabled) return;
+
+                const sender = extractSender(messageElement);
+
+                // التحقق من الرد مرة واحدة
+                if (settings.onlyOnce && settings.repliedUsers.includes(sender)) {
+                    console.log('تم الرد بالفعل على:', sender);
+                    return;
+                }
+
+                const inputField = findInputField();
+                const sendButton = findSendButton();
+
+                if (!inputField || !sendButton) {
+                    console.warn('لم يتم العثور على حقل الإدخال أو زر الإرسال');
+                    return;
+                }
+
+                isProcessing = true;
+
+                try {
+                    // إدخال النص
+                    if (inputField.tagName === 'INPUT' || inputField.tagName === 'TEXTAREA') {
+                        inputField.value = settings.replyMessage;
+                        inputField.dispatchEvent(new Event('input', { bubbles: true }));
+                        inputField.dispatchEvent(new Event('change', { bubbles: true }));
+                    } else if (inputField.getAttribute('contenteditable') === 'true') {
+                        inputField.textContent = settings.replyMessage;
+                        inputField.dispatchEvent(new Event('input', { bubbles: true }));
+                    }
+
+                    // إضافة علامة للرسالة
+                    messageElement.setAttribute('data-replied', 'true');
+                    const badge = document.createElement('span');
+                    badge.className = 'auto-replied';
+                    badge.textContent = ' 🤖 تم الرد';
+                    badge.style.cssText =
+                        'color: #2d7d9e; font-size: 11px; margin-left: 8px; font-weight: 500;';
+                    messageElement.appendChild(badge);
+
+                    // إضافة المستخدم للقائمة
+                    if (!settings.repliedUsers.includes(sender)) {
+                        settings.repliedUsers.push(sender);
+                        await saveRepliedUsers();
+                    }
+
+                    // تأخير ثم إرسال
+                    setTimeout(() => {
+                        sendButton.click();
+                        console.log('✅ تم إرسال الرد إلى:', sender);
+                        isProcessing = false;
+                    }, 400);
+
+                } catch (e) {
+                    console.error('خطأ في إرسال الرد:', e);
+                    isProcessing = false;
+                }
+            }
+
+            // مراقبة الرسائل
+            function observeMessages() {
+                let observer = new MutationObserver((mutations) => {
+                    for (const mutation of mutations) {
+                        for (const node of mutation.addedNodes) {
+                            if (node.nodeType !== Node.ELEMENT_NODE) continue;
+
+                            let messageElement = null;
+
+                            // التحقق من أن العنصر رسالة
+                            if (node.matches && node.matches(
+                                    '.message, .chat-message, .msg, .message-item, [role="article"], ._1htf, .copyable-text'
+                                    )) {
+                                messageElement = node;
+                            } else {
+                                // البحث داخل العنصر
+                                const found = node.querySelector(
+                                    '.message, .chat-message, .msg, .message-item, [role="article"], ._1htf, .copyable-text'
+                                    );
+                                if (found) {
+                                    messageElement = found;
+                                }
+                            }
+
+                            if (messageElement && isNewMessage(messageElement)) {
+                                setTimeout(() => {
+                                    sendReply(messageElement);
+                                }, 600);
+                            }
+                        }
+                    }
+                });
+
+                observer.observe(document.body, {
+                    childList: true,
+                    subtree: true,
+                    attributes: false
+                });
+
+                console.log('🚀 Smart Auto Responder يعمل على هذه الصفحة');
+            }
+
+            // الاستماع لتحديثات الإعدادات
+            chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+                if (request.type === 'SETTINGS_UPDATED') {
+                    settings.enabled = request.data.enabled;
+                    settings.replyMessage = request.data.replyMessage;
+                    settings.onlyOnce = request.data.onlyOnce;
+                    settings.repliedUsers = request.data.repliedUsers;
+                    console.log('📦 تم تحديث الإعدادات:', settings);
+                }
+            });
+
+            // بدء التشغيل
+            async function init() {
+                await loadSettings();
+                observeMessages();
+                console.log('✅ Smart Auto Responder جاهز للعمل');
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+        })();
+
+        // -------- background.js (خدمة الخلفية) --------
+        (function background() {
+            // تحديث الأيقونة
+            async function updateIcon() {
+                try {
+                    const data = await chrome.storage.local.get(['enabled']);
+                    const enabled = data.enabled || false;
+                    // يمكن تغيير الأيقونة هنا إذا أردت
+                    // chrome.action.setIcon({ path: enabled ? 'icon-on.png' : 'icon-off.png' });
+                } catch (e) { /* تجاهل */ }
+            }
+
+            // الاستماع لتغييرات الإعدادات
+            chrome.storage.onChanged.addListener((changes, namespace) => {
+                if (namespace === 'local' && changes.enabled) {
+                    updateIcon();
+                }
+            });
+
+            // عند التثبيت
+            chrome.runtime.onInstalled.addListener(async () => {
+                try {
+                    const data = await chrome.storage.local.get(['enabled']);
+                    if (data.enabled === undefined) {
+                        await chrome.storage.local.set({
+                            enabled: false,
+                            replyMessage: 'شكراً لتواصلك! سأرد عليك قريباً.',
+                            onlyOnce: false,
+                            repliedUsers: []
+                        });
+                    }
+                    console.log('🤖 Smart Auto Responder مثبت');
+                } catch (e) {
+                    console.error('خطأ في التثبيت:', e);
+                }
+            });
+
+            updateIcon();
+        })();
+
+        console.log('✅ Smart Auto Responder - تم تحميل جميع المكونات');
+    </script>
 </body>
 </html>
