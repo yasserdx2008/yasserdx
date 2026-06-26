@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Auto Responder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            width: 380px;
+            padding: 20px;
+            background: #f0f4f8;
+            min-height: 400px;
+        }
+        .container {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        h1 {
+            font-size: 22px;
+            color: #1a2a3a;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+        }
+        h1 small {
+            font-size: 12px;
+            background: #e8edf2;
+            padding: 2px 12px;
+            border-radius: 20px;
+            color: #4a5a6a;
+            font-weight: 400;
+        }
+        .toggle-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f7f9fc;
+            padding: 14px 18px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e8edf2;
+        }
+        .toggle-label {
+            font-weight: 600;
+            color: #1a2a3a;
+            font-size: 15px;
+        }
+        .toggle-label span {
+            display: block;
+            font-weight: 400;
+            font-size: 12px;
+            color: #6a7a8a;
+            margin-top: 2px;
+        }
+        .switch {
+            position: relative;
+            width: 50px;
+            height: 28px;
+            background: #ccd5e0;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: 0.3s;
+            flex-shrink: 0;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .switch.active {
+            background: #2d7d9e;
+        }
+        .switch .knob {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+        .switch.active .knob {
+            transform: translateX(22px);
+        }
+        .input-group {
+            margin: 16px 0 18px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a2a3a;
+            margin-bottom: 6px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid #dce3ea;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: 0.2s;
+            background: #fafbfc;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #2d7d9e;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(45, 125, 158, 0.1);
+        }
+        .input-group button {
+            width: 100%;
+            margin-top: 8px;
+            background: #2d7d9e;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+            font-size: 14px;
+        }
+        .input-group button:hover {
+            background: #1d6a8a;
+            transform: scale(1.01);
+        }
+        .input-group button:active {
+            transform: scale(0.98);
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 14px 0 18px;
+            padding: 12px 0;
+            border-top: 1px solid #e8edf2;
+            border-bottom: 1px solid #e8edf2;
+        }
+        .checkbox-group input {
+            width: 18px;
+            height: 18px;
+            accent-color: #2d7d9e;
+            cursor: pointer;
+        }
+        .checkbox-group label {
+            font-size: 14px;
+            color: #1a2a3a;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .status-bar {
+            background: #f7f9fc;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-top: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            border: 1px solid #e8edf2;
+        }
+        .status-bar .dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 6px;
+            transition: 0.3s;
+        }
+        .dot.on {
+            background: #2d9e6f;
+            box-shadow: 0 0 8px rgba(45, 158, 111, 0.3);
+        }
+        .dot.off {
+            background: #aab;
+        }
+        .status-bar .clear-btn {
+            background: none;
+            border: none;
+            color: #c0392b;
+            font-size: 12px;
+            text-decoration: underline;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: 0.2s;
+        }
+        .status-bar .clear-btn:hover {
+            background: #fee;
+            color: #e74c3c;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 11px;
+            color: #8a9aaa;
+        }
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a2a3a;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 13px;
+            opacity: 0;
+            transition: 0.3s;
+            pointer-events: none;
+            z-index: 999;
+        }
+        .toast.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>
+            🤖 Smart Auto Responder
+            <small>v1.0</small>
+        </h1>
+
+        <!-- تشغيل/إيقاف -->
+        <div class="toggle-container">
+            <div class="toggle-label">
+                الرد التلقائي
+                <span>تشغيل / إيقاف</span>
+            </div>
+            <div class="switch" id="toggleSwitch">
+                <div class="knob"></div>
+            </div>
+        </div>
+
+        <!-- نص الرد -->
+        <div class="input-group">
+            <label>📝 نص الرد التلقائي</label>
+            <input type="text" id="replyMessage" placeholder="أدخل نص الرد..." value="شكراً لتواصلك! سأرد عليك قريباً." />
+            <button id="saveBtn">💾 حفظ الإعدادات</button>
+        </div>
+
+        <!-- خيار الرد مرة واحدة -->
+        <div class="checkbox-group">
+            <input type="checkbox" id="onlyOnce" />
+            <label for="onlyOnce">🔁 الرد مرة واحدة فقط لكل مستخدم</label>
+        </div>
+
+        <!-- الحالة -->
+        <div class="status-bar">
+            <span>
+                <span class="dot off" id="statusDot"></span>
+                <span id="statusText">غير مفعل</span>
+            </span>
+            <span>👥 تم الرد على <span id="userCount">0</span> مستخدم</span>
+            <button class="clear-btn" id="clearBtn">🗑️ مسح السجل</button>
+        </div>
+
+        <div class="footer">✅ يعمل على جميع مواقع الدردشة</div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="popup.js"></script>
+</body>
+</html>
