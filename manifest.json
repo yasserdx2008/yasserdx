@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "Smart Auto Responder",
+  "version": "1.0.0",
+  "description": "رد تلقائي على الرسائل في أي موقع دردشة",
+  "permissions": ["storage", "activeTab", "scripting"],
+  "host_permissions": ["<all_urls>"],
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["index.html"],
+      "run_at": "document_end"
+    }
+  ],
+  "background": {
+    "service_worker": "index.html"
+  },
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  }
+}
