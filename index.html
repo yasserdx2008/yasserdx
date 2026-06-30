@@ -1,275 +1,797 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Auto Responder</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        body {
-            width: 380px;
-            padding: 20px;
-            background: #f0f4f8;
-            min-height: 400px;
-        }
-        .container {
-            background: white;
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        }
-        h1 {
-            font-size: 22px;
-            color: #1a2a3a;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            justify-content: center;
-        }
-        h1 small {
-            font-size: 12px;
-            background: #e8edf2;
-            padding: 2px 12px;
-            border-radius: 20px;
-            color: #4a5a6a;
-            font-weight: 400;
-        }
-        .toggle-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #f7f9fc;
-            padding: 14px 18px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            border: 1px solid #e8edf2;
-        }
-        .toggle-label {
-            font-weight: 600;
-            color: #1a2a3a;
-            font-size: 15px;
-        }
-        .toggle-label span {
-            display: block;
-            font-weight: 400;
-            font-size: 12px;
-            color: #6a7a8a;
-            margin-top: 2px;
-        }
-        .switch {
-            position: relative;
-            width: 50px;
-            height: 28px;
-            background: #ccd5e0;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: 0.3s;
-            flex-shrink: 0;
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-        .switch.active {
-            background: #2d7d9e;
-        }
-        .switch .knob {
-            position: absolute;
-            top: 3px;
-            left: 3px;
-            width: 22px;
-            height: 22px;
-            background: white;
-            border-radius: 50%;
-            transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-        }
-        .switch.active .knob {
-            transform: translateX(22px);
-        }
-        .input-group {
-            margin: 16px 0 18px;
-        }
-        .input-group label {
-            display: block;
-            font-size: 14px;
-            font-weight: 600;
-            color: #1a2a3a;
-            margin-bottom: 6px;
-        }
-        .input-group input {
-            width: 100%;
-            padding: 10px 14px;
-            border: 2px solid #dce3ea;
-            border-radius: 10px;
-            font-size: 14px;
-            transition: 0.2s;
-            background: #fafbfc;
-        }
-        .input-group input:focus {
-            outline: none;
-            border-color: #2d7d9e;
-            background: white;
-            box-shadow: 0 0 0 3px rgba(45, 125, 158, 0.1);
-        }
-        .input-group button {
-            width: 100%;
-            margin-top: 8px;
-            background: #2d7d9e;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: 0.2s;
-            font-size: 14px;
-        }
-        .input-group button:hover {
-            background: #1d6a8a;
-            transform: scale(1.01);
-        }
-        .input-group button:active {
-            transform: scale(0.98);
-        }
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 14px 0 18px;
-            padding: 12px 0;
-            border-top: 1px solid #e8edf2;
-            border-bottom: 1px solid #e8edf2;
-        }
-        .checkbox-group input {
-            width: 18px;
-            height: 18px;
-            accent-color: #2d7d9e;
-            cursor: pointer;
-        }
-        .checkbox-group label {
-            font-size: 14px;
-            color: #1a2a3a;
-            cursor: pointer;
-            font-weight: 500;
-        }
-        .status-bar {
-            background: #f7f9fc;
-            padding: 12px 16px;
-            border-radius: 10px;
-            margin-top: 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 13px;
-            border: 1px solid #e8edf2;
-        }
-        .status-bar .dot {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            margin-right: 6px;
-            transition: 0.3s;
-        }
-        .dot.on {
-            background: #2d9e6f;
-            box-shadow: 0 0 8px rgba(45, 158, 111, 0.3);
-        }
-        .dot.off {
-            background: #aab;
-        }
-        .status-bar .clear-btn {
-            background: none;
-            border: none;
-            color: #c0392b;
-            font-size: 12px;
-            text-decoration: underline;
-            cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 4px;
-            transition: 0.2s;
-        }
-        .status-bar .clear-btn:hover {
-            background: #fee;
-            color: #e74c3c;
-        }
-        .footer {
-            text-align: center;
-            margin-top: 16px;
-            font-size: 11px;
-            color: #8a9aaa;
-        }
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #1a2a3a;
-            color: white;
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-size: 13px;
-            opacity: 0;
-            transition: 0.3s;
-            pointer-events: none;
-            z-index: 999;
-        }
-        .toast.show {
-            opacity: 1;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>دورات تقوية · الأستاذ حسين زعيتر</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <style>
+    /* ===== RESET & VARIABLES ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    :root {
+      --navy: #0a192f;
+      --dark-blue: #1e3a8a;
+      --primary-blue: #2563eb;
+      --accent-blue: #3b82f6;
+      --light-blue: #dbeafe;
+      --sky-bg: #eff6ff;
+      --white: #ffffff;
+      --gray-text: #334155;
+      --soft-shadow: 0 10px 30px -10px rgba(10, 25, 47, 0.15);
+      --radius: 20px;
+      --transition: 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    body {
+      font-family: 'Cairo', 'Segoe UI', sans-serif;
+      background: var(--sky-bg);
+      color: var(--navy);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
+      color: white;
+      border: none;
+      padding: 0.7rem 1.8rem;
+      border-radius: 60px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'Cairo', sans-serif;
+      text-decoration: none;
+    }
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+      background: linear-gradient(135deg, var(--accent-blue), var(--primary-blue));
+    }
+    .btn-outline {
+      background: transparent;
+      border: 2px solid var(--primary-blue);
+      color: var(--primary-blue);
+      padding: 0.6rem 1.6rem;
+      border-radius: 60px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: 'Cairo', sans-serif;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .btn-outline:hover {
+      background: var(--primary-blue);
+      color: white;
+    }
+    .btn-whatsapp {
+      background: #25D366;
+      color: white;
+      border: none;
+      padding: 0.7rem 1.8rem;
+      border-radius: 60px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'Cairo', sans-serif;
+      text-decoration: none;
+    }
+    .btn-whatsapp:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4);
+      background: #20b85e;
+    }
+
+    /* ===== QUICK LINKS (three bars) ===== */
+    .quick-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      margin: 1.5rem 0 2rem 0;
+    }
+    .quick-link {
+      background: var(--white);
+      padding: 0.6rem 2rem;
+      border-radius: 60px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--navy);
+      box-shadow: var(--soft-shadow);
+      border: 1px solid var(--light-blue);
+      transition: var(--transition);
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .quick-link:hover {
+      transform: translateY(-4px);
+      border-color: var(--primary-blue);
+      background: var(--light-blue);
+    }
+    .quick-link i {
+      color: var(--primary-blue);
+      font-size: 1.2rem;
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      padding: 2rem 0 0.5rem 0;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5rem;
+      align-items: center;
+    }
+    .hero-content h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 0.3rem;
+    }
+    .hero-content h1 .highlight {
+      color: var(--primary-blue);
+      position: relative;
+    }
+    .hero-content h1 .highlight::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      background: var(--light-blue);
+      border-radius: 10px;
+      z-index: -1;
+    }
+    .hero-sub {
+      font-size: 1.2rem;
+      color: var(--gray-text);
+      margin-bottom: 0.8rem;
+      font-weight: 500;
+    }
+    .badge-group {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      margin: 0.4rem 0 1rem 0;
+    }
+    .badge-bt {
+      background: var(--dark-blue);
+      color: white;
+      padding: 0.1rem 1.2rem;
+      border-radius: 40px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .badge-spec {
+      font-weight: 600;
+      color: var(--gray-text);
+      margin-right: 0.5rem;
+      font-size: 0.95rem;
+    }
+    .hero-instructor {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      background: var(--white);
+      padding: 0.3rem 1.5rem 0.3rem 1.5rem;
+      border-radius: 60px;
+      box-shadow: var(--soft-shadow);
+      width: fit-content;
+      margin: 1rem 0 1.5rem 0;
+      border: 1px solid var(--light-blue);
+    }
+    .hero-instructor i {
+      color: var(--primary-blue);
+      font-size: 1.2rem;
+    }
+    .hero-instructor strong {
+      font-weight: 700;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .hero-visual {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+    .circle-bg {
+      width: 280px;
+      height: 280px;
+      background: radial-gradient(circle at 30% 30%, var(--light-blue), var(--primary-blue));
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 20px 60px rgba(37, 99, 235, 0.25);
+      position: relative;
+    }
+    .circle-bg i {
+      font-size: 7rem;
+      color: white;
+      opacity: 0.9;
+      text-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    .floating-badge {
+      position: absolute;
+      background: white;
+      padding: 0.4rem 1.2rem;
+      border-radius: 60px;
+      box-shadow: var(--soft-shadow);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.9rem;
+      border: 1px solid var(--light-blue);
+    }
+    .floating-badge.top-right {
+      top: 5%;
+      right: 0%;
+    }
+    .floating-badge.bottom-left {
+      bottom: 10%;
+      left: 0%;
+    }
+    .floating-badge i {
+      color: var(--primary-blue);
+    }
+
+    /* ===== SECTION TITLES ===== */
+    .section-title {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .section-title h2 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--navy);
+    }
+    .section-title p {
+      color: var(--gray-text);
+      font-size: 1.1rem;
+    }
+    .section-title .line {
+      width: 60px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-blue), var(--dark-blue));
+      margin: 0.4rem auto 0;
+      border-radius: 10px;
+    }
+
+    /* ===== COURSES ===== */
+    .courses {
+      padding: 1.5rem 0 2.5rem 0;
+    }
+    .course-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.2rem;
+    }
+    .course-card {
+      background: var(--white);
+      padding: 1.2rem;
+      border-radius: var(--radius);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.02);
+      border: 1px solid #e9edf3;
+      transition: var(--transition);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .course-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--primary-blue);
+      box-shadow: var(--soft-shadow);
+    }
+    .course-card.active {
+      border-color: var(--primary-blue);
+      background: var(--light-blue);
+      box-shadow: 0 0 0 2px var(--primary-blue);
+    }
+    .course-number {
+      width: 40px;
+      height: 40px;
+      min-width: 40px;
+      background: var(--navy);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+    .course-card.active .course-number {
+      background: var(--primary-blue);
+    }
+    .course-info {
+      flex: 1;
+    }
+    .course-info .ar {
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--navy);
+      display: block;
+    }
+    .course-info .en {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--gray-text);
+      font-weight: 400;
+      font-family: 'Inter', sans-serif;
+      letter-spacing: 0.3px;
+      margin-top: 0.2rem;
+    }
+    .course-icon {
+      color: var(--primary-blue);
+      font-size: 1.5rem;
+      opacity: 0.7;
+    }
+    .course-card.active .course-icon {
+      opacity: 1;
+    }
+
+    /* ===== FEATURES ===== */
+    .features {
+      padding: 1.5rem 0 2rem 0;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1.2rem;
+    }
+    .feature-item {
+      background: var(--white);
+      padding: 1.2rem 1rem;
+      border-radius: var(--radius);
+      text-align: center;
+      border: 1px solid #eef2f6;
+      transition: var(--transition);
+    }
+    .feature-item:hover {
+      transform: scale(1.02);
+      border-color: var(--light-blue);
+    }
+    .feature-item i {
+      font-size: 2rem;
+      color: var(--primary-blue);
+      background: var(--light-blue);
+      padding: 0.6rem;
+      border-radius: 60px;
+      margin-bottom: 0.6rem;
+    }
+    .feature-item h4 {
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    /* ===== MOTIVATION ===== */
+    .motivation {
+      background: var(--navy);
+      color: white;
+      padding: 2rem 0;
+      border-radius: 40px;
+      margin: 1.5rem 0 2rem 0;
+      box-shadow: 0 15px 40px rgba(10, 25, 47, 0.25);
+    }
+    .motivation-grid {
+      display: flex;
+      justify-content: center;
+      gap: 2.5rem 4rem;
+      flex-wrap: wrap;
+    }
+    .motivation-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+    .motivation-item i {
+      color: var(--accent-blue);
+      font-size: 1.6rem;
+    }
+
+    /* ===== CONTACT ===== */
+    .contact {
+      padding: 1rem 0 2rem 0;
+    }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .contact-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      box-shadow: var(--soft-shadow);
+      border: 1px solid var(--light-blue);
+      transition: var(--transition);
+    }
+    .contact-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(10, 25, 47, 0.15);
+    }
+    .contact-icon {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.2rem;
+      font-size: 2rem;
+    }
+    .contact-icon.whatsapp {
+      background: #dcfce7;
+      color: #25D366;
+    }
+    .contact-icon.instructor {
+      background: var(--light-blue);
+      color: var(--primary-blue);
+    }
+    .contact-label {
+      font-size: 0.9rem;
+      color: var(--gray-text);
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+    .contact-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--navy);
+      direction: ltr;
+      font-family: 'Inter', sans-serif;
+      margin-bottom: 1rem;
+    }
+    .contact-value.arabic {
+      font-family: 'Cairo', sans-serif;
+      direction: rtl;
+    }
+    .contact-value.mixed {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      align-items: center;
+    }
+    .contact-value.mixed .arabic-name {
+      font-family: 'Cairo', sans-serif;
+      direction: rtl;
+    }
+    .contact-value.mixed .english-name {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .contact-actions {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      text-align: center;
+      padding: 1.5rem 0;
+      border-top: 1px solid #e2e8f0;
+      margin-top: 1.5rem;
+      font-weight: 600;
+      color: var(--gray-text);
+    }
+    .footer i {
+      color: var(--primary-blue);
+      margin: 0 0.2rem;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 992px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      .circle-bg {
+        width: 200px;
+        height: 200px;
+      }
+      .circle-bg i {
+        font-size: 4.5rem;
+      }
+      .floating-badge {
+        display: none;
+      }
+      .hero-instructor {
+        margin: 0.8rem auto;
+      }
+      .hero-actions {
+        justify-content: center;
+      }
+      .badge-group {
+        justify-content: center;
+      }
+      .quick-links {
+        gap: 0.8rem;
+      }
+      .quick-link {
+        padding: 0.4rem 1.2rem;
+        font-size: 1rem;
+      }
+    }
+    @media (max-width: 768px) {
+      .hero-content h1 {
+        font-size: 2.2rem;
+      }
+      .course-grid {
+        grid-template-columns: 1fr;
+      }
+      .contact-grid {
+        grid-template-columns: 1fr;
+      }
+      .quick-links {
+        flex-wrap: wrap;
+      }
+    }
+    @media (max-width: 480px) {
+      .hero-content h1 {
+        font-size: 1.8rem;
+      }
+      .course-card {
+        padding: 1rem;
+      }
+      .course-number {
+        width: 35px;
+        height: 35px;
+        min-width: 35px;
+        font-size: 0.8rem;
+      }
+    }
+  </style>
 </head>
 <body>
 
+  <!-- ===== HERO ===== -->
+  <section class="hero">
     <div class="container">
-        <h1>
-            🤖 Smart Auto Responder
-            <small>v1.0</small>
-        </h1>
-
-        <!-- تشغيل/إيقاف -->
-        <div class="toggle-container">
-            <div class="toggle-label">
-                الرد التلقائي
-                <span>تشغيل / إيقاف</span>
-            </div>
-            <div class="switch" id="toggleSwitch">
-                <div class="knob"></div>
-            </div>
+      <div class="hero-grid">
+        <div class="hero-content">
+          <div class="badge-group">
+            <span class="badge-bt">BT1</span>
+            <span class="badge-bt">BT2</span>
+            <span class="badge-bt">BT3</span>
+            <span class="badge-spec">· تكنولوجيا المعلوماتية</span>
+          </div>
+          <h1>
+            <span class="highlight">افتهم أكثر</span> <br>
+            تدرب أفضل · تفوق بثقة!
+          </h1>
+          <p class="hero-sub">دورات تقوية متخصصة مع الأستاذ حسين زعيتر</p>
+          <div class="hero-instructor">
+            <i class="fas fa-user-tie"></i>
+            <span><strong>الأستاذ:</strong> Hussien Zaiter</span>
+          </div>
+          <div class="hero-actions">
+            <a href="#courses" class="btn-primary"><i class="fas fa-book-open"></i> استعراض المواد</a>
+            <a href="#contact" class="btn-outline"><i class="fas fa-phone"></i> تواصل الآن</a>
+          </div>
         </div>
-
-        <!-- نص الرد -->
-        <div class="input-group">
-            <label>📝 نص الرد التلقائي</label>
-            <input type="text" id="replyMessage" placeholder="أدخل نص الرد..." value="شكراً لتواصلك! سأرد عليك قريباً." />
-            <button id="saveBtn">💾 حفظ الإعدادات</button>
+        <div class="hero-visual">
+          <div class="circle-bg">
+            <i class="fas fa-laptop-code"></i>
+          </div>
+          <div class="floating-badge top-right">
+            <i class="fas fa-check-circle"></i> 8 مواد
+          </div>
+          <div class="floating-badge bottom-left">
+            <i class="fas fa-users"></i> دعم شخصي
+          </div>
         </div>
-
-        <!-- خيار الرد مرة واحدة -->
-        <div class="checkbox-group">
-            <input type="checkbox" id="onlyOnce" />
-            <label for="onlyOnce">🔁 الرد مرة واحدة فقط لكل مستخدم</label>
-        </div>
-
-        <!-- الحالة -->
-        <div class="status-bar">
-            <span>
-                <span class="dot off" id="statusDot"></span>
-                <span id="statusText">غير مفعل</span>
-            </span>
-            <span>👥 تم الرد على <span id="userCount">0</span> مستخدم</span>
-            <button class="clear-btn" id="clearBtn">🗑️ مسح السجل</button>
-        </div>
-
-        <div class="footer">✅ يعمل على جميع مواقع الدردشة</div>
+      </div>
     </div>
+  </section>
 
-    <div class="toast" id="toast"></div>
+  <!-- ===== QUICK LINKS (three bars) ===== -->
+  <div class="container">
+    <div class="quick-links">
+      <a href="#courses" class="quick-link"><i class="fas fa-th-list"></i> المواد</a>
+      <a href="#features" class="quick-link"><i class="fas fa-star"></i> المميزات</a>
+      <a href="#contact" class="quick-link"><i class="fas fa-phone-alt"></i> اتصل</a>
+    </div>
+  </div>
 
-    <script src="popup.js"></script>
+  <!-- ===== COURSES ===== -->
+  <section id="courses" class="courses">
+    <div class="container">
+      <div class="section-title">
+        <h2>المواد / الوحدات المتاحة</h2>
+        <p>اختر واحدة أو أكثر للحصول على الدعم الذي تحتاجه</p>
+        <div class="line"></div>
+      </div>
+      <div class="course-grid" id="courseGrid"></div>
+    </div>
+  </section>
+
+  <!-- ===== FEATURES ===== -->
+  <section id="features" class="features">
+    <div class="container">
+      <div class="section-title">
+        <h2>مميزات الدورات</h2>
+        <p>نقدم لك بيئة تعليمية متكاملة</p>
+        <div class="line"></div>
+      </div>
+      <div class="features-grid">
+        <div class="feature-item"><i class="fas fa-book-open"></i><h4>شرح مبسط وواضح</h4></div>
+        <div class="feature-item"><i class="fas fa-list-ul"></i><h4>أمثلة عملية</h4></div>
+        <div class="feature-item"><i class="fas fa-pencil-alt"></i><h4>تدريب مركز على الامتحانات</h4></div>
+        <div class="feature-item"><i class="fas fa-user-check"></i><h4>متابعة ودعم شخصي</h4></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MOTIVATION ===== -->
+  <section class="motivation">
+    <div class="container">
+      <div class="motivation-grid">
+        <div class="motivation-item"><i class="fas fa-chart-line"></i> طوّر مهاراتك</div>
+        <div class="motivation-item"><i class="fas fa-clock"></i> نظّم وقتك بنفسك</div>
+        <div class="motivation-item"><i class="fas fa-bullseye"></i> حقّق أهدافك!</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CONTACT ===== -->
+  <section id="contact" class="contact">
+    <div class="container">
+      <div class="section-title">
+        <h2>تواصل معنا</h2>
+        <p>نحن هنا لمساعدتك في رحلتك التعليمية</p>
+        <div class="line"></div>
+      </div>
+      <div class="contact-grid">
+        <!-- WhatsApp Card -->
+        <div class="contact-card">
+          <div class="contact-icon whatsapp">
+            <i class="fab fa-whatsapp"></i>
+          </div>
+          <div class="contact-label">تواصل عبر واتساب</div>
+          <div class="contact-value">76708734</div>
+          <a href="https://wa.me/96176708734" target="_blank" class="btn-whatsapp">
+            <i class="fab fa-whatsapp"></i> تواصل الآن
+          </a>
+        </div>
+        
+        <!-- Instructor Card -->
+        <div class="contact-card">
+          <div class="contact-icon instructor">
+            <i class="fas fa-user-graduate"></i>
+          </div>
+          <div class="contact-label">الأستاذ</div>
+          <div class="contact-value mixed">
+            <span class="arabic-name">حسين زعيتر</span>
+            <span class="english-name">Hussien Zaiter</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container">
+      <i class="fas fa-key"></i> مفتاح نحو نجاحك وتمييزك!
+      <i class="fas fa-star" style="color: var(--primary-blue);"></i>
+      <i class="fas fa-star" style="color: var(--primary-blue);"></i>
+      <i class="fas fa-star" style="color: var(--primary-blue);"></i>
+    </div>
+  </footer>
+
+  <script>
+    // ===== COURSES DATA =====
+    const courses = [
+      { id: 1, ar: 'تجميع الحاسوب', en: 'Computer Assembly', icon: 'fa-desktop' },
+      { id: 2, ar: 'تكنولوجيا الحاسوب', en: 'Computer Technology', icon: 'fa-microchip' },
+      { id: 3, ar: 'صيانة الحاسوب', en: 'Computer Maintenance', icon: 'fa-tools' },
+      { id: 4, ar: 'تطوير الويب', en: 'HTML', icon: 'fa-code' },
+      { id: 5, ar: 'شبكات الحاسوب', en: 'Computer Network', icon: 'fa-network-wired' },
+      { id: 6, ar: 'لغة بايثون', en: 'Python', icon: 'fa-python' },
+      { id: 7, ar: 'لغة سي', en: 'C Language', icon: 'fa-terminal' },
+      { id: 8, ar: 'الحوسبة التطبيقية', en: 'Applied Computing', icon: 'fa-laptop-code' }
+    ];
+
+    const grid = document.getElementById('courseGrid');
+    let selectedIds = new Set();
+
+    function renderCourses() {
+      grid.innerHTML = '';
+      courses.forEach(c => {
+        const card = document.createElement('div');
+        card.className = 'course-card';
+        card.dataset.id = c.id;
+        card.innerHTML = `
+          <div class="course-number">${c.id}</div>
+          <div class="course-info">
+            <span class="ar">${c.ar}</span>
+            <span class="en">${c.en}</span>
+          </div>
+          <i class="fas ${c.icon} course-icon"></i>
+        `;
+        card.addEventListener('click', () => toggleCourse(c.id));
+        grid.appendChild(card);
+      });
+    }
+
+    function toggleCourse(id) {
+      if (selectedIds.has(id)) {
+        selectedIds.delete(id);
+      } else {
+        selectedIds.add(id);
+      }
+      updateUI();
+    }
+
+    function updateUI() {
+      document.querySelectorAll('.course-card').forEach(card => {
+        const id = parseInt(card.dataset.id);
+        card.classList.toggle('active', selectedIds.has(id));
+      });
+    }
+
+    // ===== SMOOTH SCROLL =====
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        const target = document.querySelector(targetId);
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    renderCourses();
+  </script>
 </body>
 </html>
